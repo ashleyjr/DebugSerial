@@ -1,7 +1,35 @@
-from threading import Timer
+#!/usr/bin/python
+from random import randrange
+import DS_strings
 
-def hello():
-    print "hello, world"
+import time
+import numpy as np
+import matplotlib.pyplot as plt
 
-t = Timer(1.0, hello)
-t.start() # after 30 seconds, "hello, world" will be printed
+
+
+
+fig=plt.figure()
+plt.axis([0,100,0,255])
+
+x=list()
+y=list()
+
+plt.ion()
+plt.show()
+
+DS_strings.radixHeader();
+for i in range(1,200):
+	dummyData = randrange(0,255,1)
+	if(i > 100):
+		plt.axis([i-100,i,0,255])
+	DS_strings.radix(dummyData)
+	temp_y=np.random.random()
+	x.append(i)
+	y.append(dummyData)
+	plt.scatter(i,dummyData)
+	plt.draw()
+	time.sleep(0.05)
+
+
+
