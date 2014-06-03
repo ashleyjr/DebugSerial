@@ -1,48 +1,33 @@
 #!/usr/bin/python
 from threading import Thread
 from random import randrange
-import DS_strings
-
 import time
-import numpy as np
-import matplotlib.pyplot as plt
+import DS_strings
+from DS_graphs import Graph
+from DS_serials import Serial
 
-i = 0
-exit = 0
-x=list()
-y=list()
-
-def updateGraph():
-	while(exit == 0):
-		plt.scatter(x,y)
-		plt.draw()
-		time.sleep(0.1)
-
-
-fig=plt.figure()
-plt.axis([0,100,0,255])
-
-plt.ion()
-plt.show()
-
-DS_strings.radixHeader();
+def main():
+	u = Serial()
+	#g = Graph(100)
+	#t1 = Thread(target=g.update)
+	#t1.start()
+	#for i in range(1,150):
+	#	time.sleep(0.05)
+	#	dummyData = randrange(0,255,1)
+	#	DS_strings.radix(dummyData)
+	#	g.newXY(i,dummyData)
+	#g.kill()
+	#t1.join()
+	#print 'Finished'
 
 
-thread = Thread(target=updateGraph,args=[])
-thread.start()
-while(i < 20):
-	i = i + 1
-	dummyData = randrange(0,255,1)
-	if(i > 100):
-		plt.axis([i-100,i,0,255])
-	DS_strings.radix(dummyData)
-	temp_y=np.random.random()
-	x.append(i)
-	y.append(dummyData)
-	#plt.scatter(x,y)
-	#plt.draw()
-	#time.sleep(0.01)
-exit = 1
-thread.join()
+def connect(com,baudrate):
+	try:
+		return serial.Serial(com,baudrate,bytesize=8,timeout=1,parity=serial.PARITY_NONE,rtscts=0)
+	except serial.serialutil.SerialException:
+		print('Error: Connecting to serial port, exiting...')
+		sys.exit(0)
 
+if __name__ == "__main__":
+	main()
 
