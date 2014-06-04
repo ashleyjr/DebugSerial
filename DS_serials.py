@@ -17,7 +17,7 @@ class Serial:
 		except ImportError:
 			print('\nError: PySerial not found, exiting...')
 			sys.exit(0)
-		# USER SLECTS PORT
+		# SELECT PORT
 		while(1):
 			try:
 				ports = list()
@@ -31,7 +31,7 @@ class Serial:
 				elif(len(descs) == 1):										# One Port
 					print('\nConnecting to only available serial port.')
 					print('   %s' % descs[0])
-					chosen = ports[0]
+					chosen = 0
 					break
 				else:														# Many Ports, choose
 					num_ports = len(ports)
@@ -48,15 +48,46 @@ class Serial:
 			except NameError,ValueError:
 				print('Invalid choice')
 		# LOAD SETTINGS FILE
-		try:
-			f = open("DS_configs.dat", 'r')
-			contents = f.read()
-			if((contents.count('\n') > 1) or (contents.count(',') > 6)):
-				print('Settings corrupt')
-				raise NameError('SettingsError')
-		except:									# Config file is missing or corrupt
-			f = open("DS_configs.dat", 'w')
-			f.write('9600,8,None,1,None,0,0')
+		while(1):
+			try:
+				f = open("DS_configs.dat", 'r')
+				settings = f.read().split(',')
+				if(len(settings) != 7):
+					print('Settings corrupt.')
+					os.remove("DS_configs.dat")
+					raise NameError('SettingsError')
+				else:
+					print('Settings:')
+					print('   Baudrate: %s' % settings[0])
+					print('       Bits: %s' % settings[1])
+					print('     Parity: %s' % settings[2])
+					print('   StopBits: %s' % settings[3])
+					print('    Timeout: %s' % settings[4])
+					print('    XonXoff: %s' % settings[5])
+					print('     Rtscts: %s' % settings[6])
+					while(1):
+						user = ''
+						user = raw_input('OK? (y/n):')
+						if((user == 'n') or (user == 'N')):
+							settings[0] = raw_input('   Baudrate:')
+							settings[1] = raw_input('       Bits:')
+							settings[2] = raw_input('     Parity:')
+							settings[3] = raw_input('   StopBits:')
+							settings[4] = raw_input('    Timeout:')
+							settings[5] = raw_input('    XonXoff:')
+							settings[6] = raw_input('     Rtscts:')
+						if((user == 'y') or (user == 'Y')):
+							break
+					f.close();
+					break
+			except NameError:										# Config file is missing or corrupt
+				print('Creating new settings file.')
+				f = open("DS_configs.dat", 'w')
+				f.write('9600,8,None,1,None,0,0')
+				f.close();
+		f = open("DS_configs.dat", 'w')
+		f.write('%s,%s,%s,%s,%s,%s,%s' % (settings[0],settings[1],settings[2],settings[3],settings[4],settings[5],settings[6]))
+		f.close();
 		# CONNECT
 		try:
 			self.ser = serial.Serial(port=ports[chosen],baudrate=9600,bytesize=8,parity='N',stopbits=1,timeout=None,xonxoff=0,rtscts=0)
