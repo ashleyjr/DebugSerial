@@ -48,54 +48,26 @@ class Serial:
 						break
 			except NameError,ValueError:
 				print('Invalid choice')
-		# LOAD SETTINGS FILE
-		name = list()
-		name.append("  Baudrate")
-		name.append("      Bits")
-		name.append("  StopBits")
-		name.append("   TimeOut")
-		name.append("    Parity")
-		name.append("   XonXoff")
-		name.append("    Rtscts")
+		# LOAD BAUD RATE
 		while(1):
 			try:
 				f = open("DS_configs.dat", 'r')
-				settings = f.read().split(',')
+				baud = int(f.read())
 				f.close()
-				if(len(settings) != 7):
-					print('Settings corrupt.')
-					os.remove("DS_configs.dat")
-					raise NameError('SettingsError')
-				else:
-					if(settings[0].isdigit()):
-						baud = int(settings[0])
-					else:
-						raise NameError('SettingsError')
-					print('Settings:')
-					for i in range(0,6):
-						print("%s: %s"% (name[i],settings[i]))
-					user = raw_input('OK? (y/n):')
-					if((user == 'n') or (user == 'N')):
-						for i in range(0,4):
-							print i
-							while(1):
-								settings[i] = raw_input("%s: " % name[i])
-								if(settings[i].isdigit()):
-									break
-								else:
-									print('Error: Must be an integer.')
-						settings[4] = raw_input("%s: " % name[4])
-						settings[5] = raw_input("%s: " % name[5])
-						settings[6] = raw_input("%s: " % name[6])
-					if((user == 'y') or (user == 'Y')):
-						break
+				print('\nBaud: %s' % baud)
+				user = raw_input('Ok? (y/n)')
+				if((user == 'y') or (user == 'Y')):
+					break
+				if((user == 'n') or (user == 'N')):
 					f = open("DS_configs.dat", 'w')
-					f.write('%s,%s,%s,%s,%s,%s,%s' % (settings[0],settings[1],settings[2],settings[3],settings[4],settings[5],settings[6]))
-					f.close()
-			except IOError,NameError:										# Config file is missing or corrupt
-				print('Creating new settings file.')
+					user = raw_input('New Baud: ')
+					f.write(user)
+					f.close();
+					if(user.isdigit() == False):
+						print('Invalid input.')
+			except:
 				f = open("DS_configs.dat", 'w')
-				f.write('9600,8,None,1,None,0,0')
+				f.write('9600')
 				f.close();
 		# CONNECT
 		try:
@@ -103,4 +75,10 @@ class Serial:
 		except serial.serialutil.SerialException:
 			print('Error: Connecting to serial port, exiting...')
 			sys.exit(0)
-		self.ser.write("sup")
+		print("Connected: %s" % self.ser)
+
+	def Send(self,byte):
+		self.ser.write(chr(byte))
+
+	def Get(self):
+		return int(self.ser.read(1))
