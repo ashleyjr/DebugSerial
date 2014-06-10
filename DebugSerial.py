@@ -20,21 +20,8 @@ from DS_serials import Serial
 from DS_tests import Test
 
 def main():
-	t = Test('example')
-	#u = Serial()
-	#g = Graph(100)
-	#t1 = Thread(target=g.update)
-	#t1.start()
-	#for i in range(1,150):
-	#	time.sleep(0.05)
-	#	u.Send(randrange(0,255))
-	#	data = u.Get()
-	#	DS_strings.radix(data)
-	#	g.newXY(i,data)
-	#g.kill()
-	#t1.join()
-	#print 'Finished'
-
+	u = Serial()
+	u.terminal()
 
 if __name__ == "__main__":
 	main()

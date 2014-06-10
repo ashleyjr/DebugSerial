@@ -7,6 +7,41 @@ except ImportError:
 	sys.exit(0)
 
 
+class _Getch:
+	def __init__(self):
+		try:
+			self.impl = _GetchWindows()
+		except ImportError:
+			self.impl = _GetchUnix()
+
+	def __call__(self):
+		return self.impl()
+
+class _GetchUnix:
+	def __init__(self):
+		import tty, sys
+
+	def __call__(self):
+		import sys, tty, termios
+		fd = sys.stdin.fileno()
+		old_settings = termios.tcgetattr(fd)
+		try:
+			tty.setraw(sys.stdin.fileno())
+			ch = sys.stdin.read(1)
+		finally:
+			termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+		return ch
+
+class _GetchWindows:
+	def __init__(self):
+		import msvcrt
+
+	def __call__(self):
+		import msvcrt
+		return msvcrt.getch()
+
+
+
 class Serial:
 	def __init__(self):
 		# IMPORT STUFF
@@ -52,7 +87,7 @@ class Serial:
 		while(1):
 			try:
 				f = open("DS_configs.dat", 'r')
-				baud = int(f.read())
+				baud = 9600
 				f.close()
 				print('\nBaud: %s' % baud)
 				user = raw_input('Ok? (y/n)')
@@ -77,8 +112,12 @@ class Serial:
 			sys.exit(0)
 		print("Connected: %s" % self.ser)
 
-	def Send(self,byte):
-		self.ser.write(chr(byte))
 
-	def Get(self):
-		return int(self.ser.read(1))
+	def terminal(self):
+		while(1):
+			if(self.ser.inWaiting()):
+				print self.ser.read(1)
+			char = _Getch()
+			print char()
+		return 1
+
