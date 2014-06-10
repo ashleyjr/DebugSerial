@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import sys, os
+import sys, os, curses
 try:
 	import serial
 except ImportError:
@@ -25,11 +25,9 @@ class _GetchUnix:
 		import sys, tty, termios
 		fd = sys.stdin.fileno()
 		old_settings = termios.tcgetattr(fd)
-		try:
-			tty.setraw(sys.stdin.fileno())
-			ch = sys.stdin.read(1)
-		finally:
-			termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+		tty.setraw(sys.stdin.fileno())
+		ch = sys.stdin.read(1)
+		termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
 		return ch
 
 class _GetchWindows:
@@ -87,7 +85,7 @@ class Serial:
 		while(1):
 			try:
 				f = open("DS_configs.dat", 'r')
-				baud = 9600
+				baud = int(f.read())
 				f.close()
 				print('\nBaud: %s' % baud)
 				user = raw_input('Ok? (y/n)')
@@ -113,11 +111,17 @@ class Serial:
 		print("Connected: %s" % self.ser)
 
 
+
 	def terminal(self):
+		char = _Getch()
+		os.system('cls' if os.name == 'nt' else 'clear')
+		print('Terminal mode: Press F1 to exit')
 		while(1):
-			if(self.ser.inWaiting()):
-				print self.ser.read(1)
-			char = _Getch()
-			print char()
-		return 1
+			while(self.ser.inWaiting()):
+				sys.stdout.write(self.ser.read(1))
+			user = char()
+			self.ser.write(user)
+			if(user == 'q'):
+				break
+
 
