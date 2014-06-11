@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import sys, os, curses
+import sys, os, curses, threading
 try:
 	import serial
 except ImportError:
@@ -111,17 +111,40 @@ class Serial:
 		print("Connected: %s" % self.ser)
 
 
-
 	def terminal(self):
-		char = _Getch()
 		os.system('cls' if os.name == 'nt' else 'clear')
 		print('Terminal mode: Press F1 to exit')
+		self.async = 1
+		rx = threading.Thread(target=self.asyncRx)
+		tx = threading.Thread(target=self.asyncTx)
+		rx.start()
+		tx.start()
+		rx.join()
+		tx.join()
+
+	def asyncRx(self):
+		while(self.async == 1):
+			sys.stdout.write(self.ser.read(self.ser.inWaiting() + 1))
+
+	def asyncTx(self):
+		char = _Getch()
 		while(1):
-			while(self.ser.inWaiting()):
-				sys.stdout.write(self.ser.read(1))
 			user = char()
 			self.ser.write(user)
 			if(user == 'q'):
 				break
+		self.async = 0
+
+
+
+
+
+
+
+
+
+
+
+
 
 
