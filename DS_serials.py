@@ -1,5 +1,6 @@
 #!/usr/bin/python
-import sys, os, curses, threading
+from __future__ import curses
+import sys, os, curses, threading, time, locale
 
 try:
 	import serial
@@ -111,14 +112,46 @@ class Serial:
 
 	def terminal(self):
 		os.system('cls' if os.name == 'nt' else 'clear')
-		print('Terminal mode: Press F1 to exit')
-		self.async = 1
-		rx = threading.Thread(target=self.asyncRx)
-		tx = threading.Thread(target=self.asyncTx)
-		rx.start()
-		tx.start()
-		rx.join()
-		tx.join()
+
+
+		term = curses.initscr()
+		curses.noecho()
+		while(1):
+			term.addch(curses.KEY_F1)
+			user = term.get_wch()
+			term.addch(user)
+			print unichr(user)
+			print curses.KEY_F1
+			if(user == curses.KEY_F1):
+				break
+			term.refresh()
+		curses.endwin()
+#		#curses.noecho()
+#		#curses.echo()
+#		begin_x = 20
+#		begin_y = 7
+#		height = 5
+#		width = 40
+#		win = curses.newwin(10,10)
+#		tb = curses.textpad.Textbox(win)
+#		text = tb.edit()
+#		curses.addstr(4,1,text.encode('utf_8'))
+#
+#		for y in range(0, 100):
+#			for x in range(0, 100):
+#				try:
+#					tb.addch(y,x, ord('a') + (x*x+y*y) % 26)
+#				except curses.error:
+#					pass
+#
+#
+
+		#self.async = 1
+		#rx = threading.Thread(target=self.asyncRx)
+		#rx.start()
+
+
+		#rx.join()
 
 	def asyncRx(self):
 		while(self.async == 1):
@@ -127,6 +160,17 @@ class Serial:
 
 	def asyncTx(self):
 		while(1):
+			stdscr = curses.initscr()
+			#curses.noecho()
+			#curses.echo()
+			begin_x = 20
+			begin_y = 7
+			height = 5
+			width = 40
+			win = curses.newwin(height, width, begin_y, begin_x)
+			tb = curses.textpad.Textbox(win)
+			text = tb.edit()
+			curses.addstr(4,1,text.encode('utf_8'))
 			user = self.char()
 			print user
 			test = ord(user)
@@ -140,7 +184,6 @@ class Serial:
 			if(user == "\x1bOP"):
 				break
 		self.async = 0
-
 
 
 
