@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import sys, os, curses, threading
+
 try:
 	import serial
 except ImportError:
@@ -7,20 +8,18 @@ except ImportError:
 	sys.exit(0)
 
 
-class _Getch:
+# Cross platform grab character
+class Getch:
 	def __init__(self):
 		try:
-			self.impl = _GetchWindows()
+			self.impl = GetchWindows()
 		except ImportError:
-			self.impl = _GetchUnix()
-
+			self.impl = GetchUnix()
 	def __call__(self):
 		return self.impl()
-
-class _GetchUnix:
+class GetchUnix:
 	def __init__(self):
 		import tty, sys
-
 	def __call__(self):
 		import sys, tty, termios
 		fd = sys.stdin.fileno()
@@ -29,17 +28,15 @@ class _GetchUnix:
 		ch = sys.stdin.read(1)
 		termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
 		return ch
-
-class _GetchWindows:
+class GetchWindows:
 	def __init__(self):
 		import msvcrt
-
 	def __call__(self):
 		import msvcrt
 		return msvcrt.getch()
 
 
-
+# Deal with serial port
 class Serial:
 	def __init__(self):
 		# IMPORT STUFF
@@ -49,6 +46,7 @@ class Serial:
 		except ImportError:
 			print('\nError: PySerial not found, exiting...')
 			sys.exit(0)
+		self.char = Getch()
 		# SELECT PORT
 		while(1):
 			try:
@@ -88,7 +86,8 @@ class Serial:
 				baud = int(f.read())
 				f.close()
 				print('\nBaud: %s' % baud)
-				user = raw_input('Ok? (y/n)')
+				sys.stdout.write('Ok? (y/n)')
+				user = self.char()
 				if((user == 'y') or (user == 'Y')):
 					break
 				if((user == 'n') or (user == 'N')):
@@ -98,7 +97,7 @@ class Serial:
 					f.close();
 					if(user.isdigit() == False):
 						print('Invalid input.')
-			except:
+			except:									# Overwrite with a default
 				f = open("DS_configs.dat", 'w')
 				f.write('9600')
 				f.close();
@@ -109,7 +108,6 @@ class Serial:
 			print('Error: Connecting to serial port, exiting...')
 			sys.exit(0)
 		print("Connected: %s" % self.ser)
-
 
 	def terminal(self):
 		os.system('cls' if os.name == 'nt' else 'clear')
@@ -124,23 +122,24 @@ class Serial:
 
 	def asyncRx(self):
 		while(self.async == 1):
-			sys.stdout.write(self.ser.read(self.ser.inWaiting() + 1))
+			sys.stdout.write(self.ser.read(1))
+			sys.stdout.flush()
 
 	def asyncTx(self):
-		char = _Getch()
 		while(1):
-			user = char()
-			self.ser.write(user)
-			if(user == 'q'):
+			user = self.char()
+			print user
+			test = ord(user)
+			if((test >= 0) and (test <= 255)):
+				self.ser.write(user)
+			else:
+				print "Invalid Tx"
+			if(user == "q"):
+				break
+			#sys.stdout(unicode(user))
+			if(user == "\x1bOP"):
 				break
 		self.async = 0
-
-
-
-
-
-
-
 
 
 
