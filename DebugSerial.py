@@ -21,7 +21,7 @@ from DS_tests import Test
 
 def main():
 	u = Serial()
-	u.terminal()
+	u.radix()
 
 if __name__ == "__main__":
 	main()

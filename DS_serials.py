@@ -103,20 +103,54 @@ class Serial:
 			sys.exit(0)
 		print("Connected: %s" % self.ser)
 
-	def terminal(self):
+	def radix(self):
 		os.system('cls' if os.name == 'nt' else 'clear')
-		print("Terminal Mode:")
+		print("Radix Mode:")
 		self.async = 1
-		rx = threading.Thread(target=self.asyncRx)
+		rx = threading.Thread(target=self.asyncRxRadix)
 		tx = threading.Thread(target=self.asyncTx)
 		rx.start()
 		tx.start()
 		rx.join()
 		tx.join()
 
-	def asyncRx(self):
+	def terminal(self):
+		os.system('cls' if os.name == 'nt' else 'clear')
+		print("Terminal Mode:")
+		self.async = 1
+		rx = threading.Thread(target=self.asyncRxTerm)
+		tx = threading.Thread(target=self.asyncTx)
+		rx.start()
+		tx.start()
+		rx.join()
+		tx.join()
+
+	def asyncRxTerm(self):
 		while(self.async == 1):
 			sys.stdout.write(self.humanRead(self.ser.read(1)))
+			sys.stdout.flush()
+		print("\n\n")
+
+
+	def zeroPad(self,s,length):
+		while(len(s) < length):
+			s = "0" + s
+		return(s)
+
+	def asyncRxRadix(self):
+		sys.stdout.write("\n\rDEC     HEX     BIN          ASCII")
+		while(self.async == 1):
+			char = self.ser.read(1)
+			data = ord(char)
+			s = "{0:d}".format(data)
+			s = self.zeroPad(s,3)
+			h = "{0:x}".format(data)
+			h = self.zeroPad(h,2)
+			s = s + "   	" + h.upper()
+			b = "{0:b}".format(data)
+			b = self.zeroPad(b,8)
+			s = s + "      " + b + "     " + self.humanRead(char)
+			sys.stdout.write("\n\r%s" % s)
 			sys.stdout.flush()
 		print("\n\n")
 
@@ -146,8 +180,6 @@ class Serial:
 					self.async = 0
 			if((test >= 0) and (test <= 255)):
 				self.ser.write(user)
-
-	def asyncMenu():
 
 
 	def humanRead(self,char):
