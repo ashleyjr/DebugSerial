@@ -1,39 +1,8 @@
 #!/usr/bin/python
-import sys, os, fileinput, threading
-
-# PySerial needs to be installed
-try:
-	import serial
-	from serial.tools.list_ports import comports
-except ImportError:
-	print('\nError: PySerial not found, exiting...')
-	sys.exit(0)
-
-# Cross platform grab character
-class Getch:
-	def __init__(self):
-		try:				self.impl = GetchWindows()
-		except ImportError:	self.impl = GetchUnix()
-	def __call__(self):
-		return self.impl()
-class GetchUnix:
-	def __init__(self):
-		import tty
-	def __call__(self):
-		import tty, termios
-		fd = sys.stdin.fileno()
-		old_settings = termios.tcgetattr(fd)
-		tty.setraw(sys.stdin.fileno())
-		ch = sys.stdin.read(1)
-		termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-		return ch
-class GetchWindows:
-	def __init__(self):
-		import msvcrt
-	def __call__(self):
-		import msvcrt
-		return msvcrt.getch()
-
+import serial, sys, os, fileinput, threading
+from serial.tools.list_ports import comports
+from strings import *
+from graphs import *
 
 # Deal with serial port
 class Serial:
@@ -75,7 +44,7 @@ class Serial:
 
 
 		# LOAD BAUD RATE
-		startBAUD = 1000000								# Warning dynamic update to persist
+		startBAUD = 57600								# Warning dynamic update to persist
 		BAUD = startBAUD							# Redundancy required for persistence
 		while(1):
 			print('\nBaud: %s' % BAUD)
@@ -125,17 +94,24 @@ class Serial:
 		rx.join()
 		tx.join()
 
+	def graph(self):
+		self.g = Graph(100)
+		os.system('cls' if os.name == 'nt' else 'clear')
+		print("Graph Mode:")
+		self.async = 1
+		rx = threading.Thread(target=self.asyncRxGraph)
+		tx = threading.Thread(target=self.asyncTx)
+		rx.start()
+		tx.start()
+		rx.join()
+		tx.join()
+
 	def asyncRxTerm(self):
 		while(self.async == 1):
-			sys.stdout.write(self.humanRead(self.ser.read(1)))
+			sys.stdout.write(humanRead(self.ser.read(1),1))
 			sys.stdout.flush()
 		print("\n\n")
 
-
-	def zeroPad(self,s,length):
-		while(len(s) < length):
-			s = "0" + s
-		return(s)
 
 	def asyncRxRadix(self):
 		sys.stdout.write("\n\rDEC     HEX     BIN          ASCII")
@@ -143,15 +119,35 @@ class Serial:
 			char = self.ser.read(1)
 			data = ord(char)
 			s = "{0:d}".format(data)
-			s = self.zeroPad(s,3)
+			s = zeroPad(s,3)
 			h = "{0:x}".format(data)
-			h = self.zeroPad(h,2)
+			h = zeroPad(h,2)
 			s = s + "   	" + h.upper()
 			b = "{0:b}".format(data)
-			b = self.zeroPad(b,8)
-			s = s + "      " + b + "     " + self.humanRead(char)
+			b = zeroPad(b,8)
+			s = s + "      " + b + "     " + humanRead(char,0)
 			sys.stdout.write("\n\r%s" % s)
 			sys.stdout.flush()
+		print("\n\n")
+
+	def asyncRxGraph(self):
+		sys.stdout.write("\n\rDEC     HEX     BIN          ASCII")
+		count = 0
+		while(self.async == 1):
+			char = self.ser.read(1)
+			data = ord(char)
+			s = "{0:d}".format(data)
+			s = zeroPad(s,3)
+			h = "{0:x}".format(data)
+			h = zeroPad(h,2)
+			s = s + "   	" + h.upper()
+			b = "{0:b}".format(data)
+			b = zeroPad(b,8)
+			s = s + "      " + b + "     " + humanRead(char,0)
+			sys.stdout.write("\n\r%s" % s)
+			sys.stdout.flush()
+			self.g.newXY(count,data)
+			self.g.update()
 		print("\n\n")
 
 	def asyncTx(self):
@@ -180,85 +176,5 @@ class Serial:
 					self.async = 0
 			if((test >= 0) and (test <= 255)):
 				self.ser.write(user)
-
-
-	def humanRead(self,char):
-		data = ord(char)
-		if(data == 0):
-			return "<Null char>"
-		elif(data == 1):
-			return "<datatart of Heading>"
-		elif(data == 2):
-			return "<Start of Text>"
-		elif(data == 3):
-			return "<End of Text>"
-		elif(data == 4):
-			return "<End of Transmission>"
-		elif(data == 5):
-			return "<Enquiry>"
-		elif(data == 6):
-			return "<Acknowledgment>"
-		elif(data == 7):
-			return "<Bell>"
-		elif(data == 8):
-			return "<Back Space>"
-		elif(data == 9):
-			return "<Horizontal Tab>"
-		elif(data == 10):
-			return "<Line Feed>"
-		elif(data == 11):
-			return "<Vertical Tab>"
-		elif(data == 12):
-			return "<Form Feed>"
-		elif(data == 13):
-			return "\n\r"	#"<Carriage Return>"
-		elif(data == 14):
-			return "<Shift Out / X-On>"
-		elif(data == 15):
-			return "<Shift In / X-Off>"
-		elif(data == 16):
-			return "<Data Line Escape>"
-		elif(data == 17):
-			return "<Device Control 1 (oft. XON)>"
-		elif(data == 18):
-			return "<Device Control 2>"
-		elif(data == 19):
-			return "<Device Control 3 (oft. XOFF)>"
-		elif(data == 20):
-			return "<Device Control 4>"
-		elif(data == 21):
-			return "<Negative Acknowledgement>"
-		elif(data == 22):
-			return "<Synchronous Idle>"
-		elif(data == 23):
-			return "<End of Transmit Block>"
-		elif(data == 24):
-			return "<Cancel>"
-		elif(data == 25):
-			return "<End of Medium>"
-		elif(data == 26):
-			return "<Substitute>"
-		elif(data == 27):
-			return "<Escape>"
-		elif(data == 28):
-			return "<File Separator>"
-		elif(data == 29):
-			return "<Group Separator>"
-		elif(data == 30):
-			return "<Record Separator>"
-		elif(data == 31):
-			return "<Unit Separator>"
-		elif(data == 32):
-			return " "#"<Space>"
-		elif(data == 127):
-			return "\b"
-		else:
-			if((data > 255) or (data < 0)):
-				print("Invalid!")
-				sys.exit(0)
-			else:
-				return char
-
-
 
 

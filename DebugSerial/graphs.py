@@ -18,7 +18,6 @@ class Graph:
 		self.y.append(new_y)
 	def update(self):
 		while(self.alive):
-			time.sleep(0.5)
 			x_size = len(self.x)
 			y_size = len(self.y)
 			if(x_size < y_size):
