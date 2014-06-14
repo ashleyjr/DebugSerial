@@ -139,7 +139,6 @@ class Serial:
 
 	def asyncRxGraph(self):
 		sys.stdout.write("\n\rDEC     HEX     BIN          ASCII")
-		count = 0
 		while(self.async == 1):
 			char = self.ser.read(1)
 			data = ord(char)
@@ -153,8 +152,7 @@ class Serial:
 			s = s + "      " + b + "     " + humanRead(char,0)
 			sys.stdout.write("\n\r%s" % s)
 			sys.stdout.flush()
-			self.g.newXY(count,data)
-			count = count + 1
+			self.g.new(data)
 		self.g.kill()
 		print("\n\n")
 
