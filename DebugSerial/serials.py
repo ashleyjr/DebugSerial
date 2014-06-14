@@ -72,6 +72,8 @@ class Serial:
 			sys.exit(0)
 		print("Connected: %s" % self.ser)
 
+
+
 	def radix(self):
 		os.system('cls' if os.name == 'nt' else 'clear')
 		print("Radix Mode:")
@@ -82,6 +84,8 @@ class Serial:
 		tx.start()
 		rx.join()
 		tx.join()
+
+
 
 	def terminal(self):
 		os.system('cls' if os.name == 'nt' else 'clear')
@@ -94,8 +98,10 @@ class Serial:
 		rx.join()
 		tx.join()
 
+
+
 	def graph(self):
-		self.g = Graph(100)
+		self.g = Graph(2048)
 		os.system('cls' if os.name == 'nt' else 'clear')
 		print("Graph Mode:")
 		self.async = 1
@@ -103,6 +109,7 @@ class Serial:
 		tx = threading.Thread(target=self.asyncTx)
 		rx.start()
 		tx.start()
+		self.g.update()
 		rx.join()
 		tx.join()
 
@@ -147,7 +154,8 @@ class Serial:
 			sys.stdout.write("\n\r%s" % s)
 			sys.stdout.flush()
 			self.g.newXY(count,data)
-			self.g.update()
+			count = count + 1
+		self.g.kill()
 		print("\n\n")
 
 	def asyncTx(self):

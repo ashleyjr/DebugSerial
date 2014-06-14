@@ -18,6 +18,7 @@ class Graph:
 		self.y.append(new_y)
 	def update(self):
 		while(self.alive):
+			time.sleep(0)
 			x_size = len(self.x)
 			y_size = len(self.y)
 			if(x_size < y_size):
@@ -29,6 +30,7 @@ class Graph:
 				if(y_size > self.width):
 					pl.axis([y_size-self.width,y_size,0,255])
 			self.fig.canvas.draw()
+
 	def kill(self):
 		self.alive=False
 		pl.show(block=True)
