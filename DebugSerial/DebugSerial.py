@@ -16,7 +16,7 @@ from serials import Serial
 
 def main():
 	u = Serial()
-	u.graph()
+	u.menu()
 
 if __name__ == "__main__":
 	main()

@@ -73,6 +73,33 @@ class Serial:
 		print("Connected: %s" % self.ser)
 
 
+	def menu(self):
+		while(1):
+			sys.stdout.write('Terminal? [y/n]')
+			user = self.char()
+			if((user == 'y') or (user == 'Y')):
+				self.terminal()
+				break
+			if((user == 'n') or (user == 'N')):
+				break
+		while(1):
+			sys.stdout.write('Radix? [y/n]')
+			user = self.char()
+			if((user == 'y') or (user == 'Y')):
+				self.radix()
+				break
+			if((user == 'n') or (user == 'N')):
+				break
+		while(1):
+			sys.stdout.write('Graph? [y/n]')
+			user = self.char()
+			if((user == 'y') or (user == 'Y')):
+				self.graph()
+				break
+			if((user == 'n') or (user == 'N')):
+				break
+
+
 
 	def radix(self):
 		os.system('cls' if os.name == 'nt' else 'clear')
