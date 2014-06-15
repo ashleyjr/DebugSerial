@@ -13,8 +13,33 @@ print("------- Ashley J. Robinson ----- ajrobinson.org -------")
 
 
 from serials import Serial
+import optparse
+import sys
 
 def main():
+	print 'ARGV      :', sys.argv[1:]
+
+	parser = optparse.OptionParser()
+	parser.add_option('-t', '--output',
+		dest="output_filename",
+		default="default.out",
+	)
+	parser.add_option('-v', '--verbose',
+	dest="verbose",
+	default=False,
+	action="store_true",
+	)
+	parser.add_option('--version',
+	dest="version",
+	default=1.0,
+	type="float",
+	)
+	options, remainder = parser.parse_args()
+
+	print 'VERSION   :', options.version
+	print 'VERBOSE   :', options.verbose
+	print 'OUTPUT    :', options.output_filename
+	print 'REMAINING :', remainder
 	u = Serial()
 	u.menu()
 

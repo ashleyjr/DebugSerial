@@ -48,11 +48,9 @@ class Serial:
 		BAUD = startBAUD							# Redundancy required for persistence
 		while(1):
 			print('\nBaud: %s' % BAUD)
-			sys.stdout.write('Ok? [y/n]')
-			user = self.char()
-			if((user == 'y') or (user == 'Y')):
+			if(yesno("OK?")):
 				break
-			if((user == 'n') or (user == 'N')):
+			else:
 				user = raw_input('\nNew Baud: ')
 				if(user.isdigit() == False):
 					print('Invalid input.')
@@ -74,31 +72,12 @@ class Serial:
 
 
 	def menu(self):
-		while(1):
-			sys.stdout.write('Terminal? [y/n]')
-			user = self.char()
-			if((user == 'y') or (user == 'Y')):
-				self.terminal()
-				break
-			if((user == 'n') or (user == 'N')):
-				break
-		while(1):
-			sys.stdout.write('Radix? [y/n]')
-			user = self.char()
-			if((user == 'y') or (user == 'Y')):
-				self.radix()
-				break
-			if((user == 'n') or (user == 'N')):
-				break
-		while(1):
-			sys.stdout.write('Graph? [y/n]')
-			user = self.char()
-			if((user == 'y') or (user == 'Y')):
-				self.graph()
-				break
-			if((user == 'n') or (user == 'N')):
-				break
-
+		if(yesno('Terminal')):
+			self.terminal()
+		elif(yesno('Radix')):
+			self.radix()
+		elif(yesno('Terminal')):
+			self.graph()
 
 
 	def radix(self):

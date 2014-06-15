@@ -26,6 +26,19 @@ class GetchWindows:
 		import msvcrt
 		return msvcrt.getch()
 
+# Yes no questions
+def yesno(output):
+	char = Getch()
+	while(1):
+		sys.stdout.write(output)
+		sys.stdout.write("[y/n]: ")
+		user = char()
+		print(user)
+		if((user == 'y') or (user == 'Y')):
+			return True
+		if((user == 'n') or (user == 'N')):
+			return False
+
 
 def zeroPad(s,length):
 	while(len(s) < length):
