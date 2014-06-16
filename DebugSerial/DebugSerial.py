@@ -8,7 +8,7 @@ print("|___/ \___|_.__/ \__,_|\__, \____/ \___|_|  |_|\__,_|_|")
 print("                        __/ |                          ")
 print("                       |___/                           ")
 
-
+from Tkinter import *
 from serials import Serial
 import optparse
 import sys
@@ -24,7 +24,7 @@ def main():
 	options, remainder = parser.parse_args()
 
 	u = Serial()
-	if(options.baud or optionscom):
+	if(options.baud or options.com):
 		print("User options...")
 	if(options.baud):
 		print 'Baud: ', options.baud
@@ -33,7 +33,10 @@ def main():
 		print ' Com: ', options.com
 		u.com(options.com)
 	u.connect()
-	u.menu()
+	root = Tk()
+	app = u.menu(root)
+	root.mainloop()
+	root.destroy()
 
 if __name__ == "__main__":
 	main()

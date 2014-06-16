@@ -1,15 +1,33 @@
 #!/usr/bin/python
-import serial, sys, os, fileinput, threading
+import serial, sys, os, threading
+from Tkinter import *
 from serial.tools.list_ports import comports
 from strings import *
 from graphs import *
 
-# Deal with serial port
+DAT = "DebugSerial.dat"
+
 class Serial:
 	def __init__(self):
-		self.char = Getch()	# Char handler
+		self.char = Getch()								# Char handler
 		self.gotBaud = False
 		self.gotCom = False
+		self.Baud = 0
+		self.Com = 0
+		try:
+			f = open(DAT,'r+')
+			data = f.read().split(",")
+			if(len(data) != 2):
+				raise NameError('Corrupt data file')
+			self.Baud = int(data[0])
+			self.Com = int(data[1])
+		except:											# Covers not digits too
+			f = open(DAT,'w')
+			f.write("9600,0")
+			f.close()
+
+
+
 
 	def baud(self,b):
 		try:
@@ -23,6 +41,7 @@ class Serial:
 			print("Invalid com!")
 			sys.exit(0)
 		self.gotBaud = True
+
 
 	def com(self,c):
 		try:
@@ -40,19 +59,16 @@ class Serial:
 			sys.exit(0)
 		self.gotCom = True
 
+
 	def connect(self):
-		ports = list()
+		ports = list()															# comport info
 		descs = list()
 		for port,desc,hwid in comports():
 			ports.append(port)
 			descs.append(desc)
 
-		if(self.gotCom):														# Already know
-			chosen = self.com
-		else:
-			# SELECT PORT
-			startCHOSEN = 0
-			chosen = startCHOSEN
+
+		if(self.gotCom == False):												# Already know
 			while(1):
 				try:
 					if(len(descs) == 0):										# No Ports
@@ -61,39 +77,30 @@ class Serial:
 					elif(len(descs) == 1):										# One Port
 						print('\nConnecting to only available serial port.')
 						print('   %s' % descs[0])
-						chosen = 0
+						Self.Com = 0
 						break
 					else:														# Many Ports, choose
 						num_ports = len(ports)
 						print('\nMore than 1 serial port found.')
 						for i in range(0,num_ports):
 							print('%s:   %s' % (i,descs[i]))
-						print("NUM: %s" % chosen)
+						print("NUM: %s" % self.Com)
 						if(yesno("OK?")):
 							break
 						else:
 							user = raw_input('\nNUM:')
 							if(False == user.isdigit()):
 								raise NameError('ChoiceError')
-							chosen = int(user)
-							if((chosen < 0) or (chosen >= num_ports)):
+							self.Com = int(user)
+							if((self.Com < 0) or (self.Com >= num_ports)):
 								raise NameError('ChoiceError')
 				except NameError,ValueError:
 					print('Invalid choice')
-			for line in fileinput.input('serials.py', inplace=True):		# Dynamic updaate
-				old = ("startCHOSEN = %s" % startCHOSEN)
-				new = ("startCHOSEN = %s" % chosen)
-				print line.replace(old, new)
 
 
-		# LOAD BAUD RATE
-		if(self.gotBaud):
-			Baud = self.baud
-		else:
-			startBAUD = 57600								# Warning dynamic update to persist
-			Baud = startBAUD							# Redundancy required for persistence
+		if(self.gotBaud == False):
 			while(1):
-				print('\nBaud: %s' % Baud)
+				print('\nBaud: %s' % self.Baud)
 				if(yesno("OK?")):
 					break
 				else:
@@ -101,16 +108,11 @@ class Serial:
 					if(user.isdigit() == False):
 						print('Invalid input.')
 					else:
-						Baud = int(user)
-			for line in fileinput.input('serials.py', inplace=True):		# Dynamic updaate
-				old = ("startBAUD = %s" % startBAUD)
-				new = ("startBAUD = %s" % Baud)
-				print line.replace(old, new)
+						self.Baud = int(user)
 
 
-		# CONNECT - Don't care about other parameters, standard
 		try:
-			self.ser = serial.Serial(port=ports[chosen],baudrate=Baud,bytesize=8,parity='N',stopbits=1,timeout=None,xonxoff=0,rtscts=0)
+			self.ser = serial.Serial(port=ports[self.Com],baudrate=self.Baud,bytesize=8,parity='N',stopbits=1,timeout=None,xonxoff=0,rtscts=0)
 		except serial.serialutil.SerialException:
 			print('Error: Connecting to serial port, exiting...')
 			sys.exit(0)
@@ -120,13 +122,38 @@ class Serial:
 			print("          %s" % line)
 
 
-	def menu(self):
-		if(yesno('Terminal')):
-			self.terminal()
-		elif(yesno('Radix')):
-			self.radix()
-		elif(yesno('Grpah')):
-			self.graph()
+		# Update dat file
+		f = open(DAT,'w')
+		f.write("%s,%s" % (self.Baud,self.Com))
+		f.close()
+
+
+	def menu(self,master):
+		frame = Frame(master)
+		frame.pack()
+
+		self.button = Button(
+			frame, text="QUIT", fg="red", command=frame.quit
+		)
+		self.button.pack(side=RIGHT)
+
+		self.go_radix = Button(frame, text="Radix", command=self.radix)
+		self.go_radix.pack(side=LEFT)
+		self.go_terminal = Button(frame, text="Terminal", command=self.terminal)
+		self.go_terminal.pack(side=LEFT)
+		self.go_graph = Button(frame, text="Graph", command=self.graph)
+		self.go_graph.pack(side=LEFT)
+
+
+		#if(yesno('Terminal')):
+		#	self.terminal()
+		#elif(yesno('Radix')):
+		#	self.radix()
+		#elif(yesno('Grpah')):
+		#	self.graph()
+
+	def say_hi(self):
+		print "hi there, everyone!"
 
 
 	def radix(self):
