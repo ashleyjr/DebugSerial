@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Atmel Studio Solution File, Format Version 11.00
-Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "DistanceSensor", "DistanceSensor\DistanceSensor.cproj", "{C82E9017-53EA-4257-9A2B-E8428737B54F}"
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "TestHardware", "TestHardware\TestHardware.cproj", "{B95964A3-FA88-42B0-BD31-8A293C4B3EFA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,10 +9,10 @@ Global
 		Release|AVR = Release|AVR
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C82E9017-53EA-4257-9A2B-E8428737B54F}.Debug|AVR.ActiveCfg = Debug|AVR
-		{C82E9017-53EA-4257-9A2B-E8428737B54F}.Debug|AVR.Build.0 = Debug|AVR
-		{C82E9017-53EA-4257-9A2B-E8428737B54F}.Release|AVR.ActiveCfg = Release|AVR
-		{C82E9017-53EA-4257-9A2B-E8428737B54F}.Release|AVR.Build.0 = Release|AVR
+		{B95964A3-FA88-42B0-BD31-8A293C4B3EFA}.Debug|AVR.ActiveCfg = Debug|AVR
+		{B95964A3-FA88-42B0-BD31-8A293C4B3EFA}.Debug|AVR.Build.0 = Debug|AVR
+		{B95964A3-FA88-42B0-BD31-8A293C4B3EFA}.Release|AVR.ActiveCfg = Release|AVR
+		{B95964A3-FA88-42B0-BD31-8A293C4B3EFA}.Release|AVR.Build.0 = Release|AVR
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
