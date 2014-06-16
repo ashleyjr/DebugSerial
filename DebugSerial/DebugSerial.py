@@ -1,6 +1,4 @@
 #!/usr/bin/python
-
-# Why not ?
 print("______     _                 _____           _       _" )
 print("|  _  \   | |               /  ___|         (_)     | |")
 print("| | | |___| |__  _   _  __ _\ `--.  ___ _ __ _  __ _| |")
@@ -9,7 +7,6 @@ print("| |/ /  __/ |_) | |_| | (_| /\__/ /  __/ |  | | (_| | |")
 print("|___/ \___|_.__/ \__,_|\__, \____/ \___|_|  |_|\__,_|_|")
 print("                        __/ |                          ")
 print("                       |___/                           ")
-print("------- Ashley J. Robinson ----- ajrobinson.org -------")
 
 
 from serials import Serial
@@ -17,30 +14,25 @@ import optparse
 import sys
 
 def main():
-	print 'ARGV      :', sys.argv[1:]
-
 	parser = optparse.OptionParser()
-	parser.add_option('-t', '--output',
-		dest="output_filename",
-		default="default.out",
+	parser.add_option('-b', '--baud',
+		dest="baud"
 	)
-	parser.add_option('-v', '--verbose',
-	dest="verbose",
-	default=False,
-	action="store_true",
-	)
-	parser.add_option('--version',
-	dest="version",
-	default=1.0,
-	type="float",
+	parser.add_option('-c', '--com',
+		dest="com"
 	)
 	options, remainder = parser.parse_args()
 
-	print 'VERSION   :', options.version
-	print 'VERBOSE   :', options.verbose
-	print 'OUTPUT    :', options.output_filename
-	print 'REMAINING :', remainder
 	u = Serial()
+	if(options.baud or optionscom):
+		print("User options...")
+	if(options.baud):
+		print 'Baud: ', options.baud
+		u.baud(options.baud)
+	if(options.com):
+		print ' Com: ', options.com
+		u.com(options.com)
+	u.connect()
 	u.menu()
 
 if __name__ == "__main__":

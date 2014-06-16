@@ -7,68 +7,117 @@ from graphs import *
 # Deal with serial port
 class Serial:
 	def __init__(self):
-		self.char = Getch()
+		self.char = Getch()	# Char handler
+		self.gotBaud = False
+		self.gotCom = False
 
-		# SELECT PORT
-		while(1):
-			try:
-				ports = list()
-				descs = list()
-				for port,desc,hwid in comports():
-					ports.append(port)
-					descs.append(desc)
-				if(len(descs) == 0):										# No Ports
-					print('\nError: No serial ports found, exiting...')
-					sys.exit(0)
-				elif(len(descs) == 1):										# One Port
-					print('\nConnecting to only available serial port.')
-					print('   %s' % descs[0])
-					chosen = 0
-					break
-				else:														# Many Ports, choose
-					num_ports = len(ports)
-					print('\nMore than 1 serial port found.')
-					for i in range(0,num_ports):
-						print('%s:   %s' % (i,descs[i]))
-					user = ''
-					user = raw_input('\nNUM:')
-					if(False == user.isdigit()):
-						raise NameError('ChoiceError')
-					chosen = int(user)
-					if((chosen < 0) or (chosen >= num_ports)):
-						raise NameError('ChoiceError')
-					else:
+	def baud(self,b):
+		try:
+			if(False == b.isdigit()):
+				raise NameError('ChoiceError')
+			user = int(b)
+			if(user < 0):
+				raise NameError('ChoiceError')
+			self.baud = user
+		except:
+			print("Invalid com!")
+			sys.exit(0)
+		self.gotBaud = True
+
+	def com(self,c):
+		try:
+			ports = list()
+			for port,desc,hwid in comports():
+				ports.append(port)
+			if(False == c.isdigit()):
+				raise NameError('ChoiceError')
+			user = int(c)
+			if((user < 0) or (user >= len(ports))):
+				raise NameError('ChoiceError')
+			self.com = user
+		except:
+			print("Invalid com!")
+			sys.exit(0)
+		self.gotCom = True
+
+	def connect(self):
+		ports = list()
+		descs = list()
+		for port,desc,hwid in comports():
+			ports.append(port)
+			descs.append(desc)
+
+		if(self.gotCom):														# Already know
+			chosen = self.com
+		else:
+			# SELECT PORT
+			startCHOSEN = 0
+			chosen = startCHOSEN
+			while(1):
+				try:
+					if(len(descs) == 0):										# No Ports
+						print('\nError: No serial ports found, exiting...')
+						sys.exit(0)
+					elif(len(descs) == 1):										# One Port
+						print('\nConnecting to only available serial port.')
+						print('   %s' % descs[0])
+						chosen = 0
 						break
-			except NameError,ValueError:
-				print('Invalid choice')
+					else:														# Many Ports, choose
+						num_ports = len(ports)
+						print('\nMore than 1 serial port found.')
+						for i in range(0,num_ports):
+							print('%s:   %s' % (i,descs[i]))
+						print("NUM: %s" % chosen)
+						if(yesno("OK?")):
+							break
+						else:
+							user = raw_input('\nNUM:')
+							if(False == user.isdigit()):
+								raise NameError('ChoiceError')
+							chosen = int(user)
+							if((chosen < 0) or (chosen >= num_ports)):
+								raise NameError('ChoiceError')
+				except NameError,ValueError:
+					print('Invalid choice')
+			for line in fileinput.input('serials.py', inplace=True):		# Dynamic updaate
+				old = ("startCHOSEN = %s" % startCHOSEN)
+				new = ("startCHOSEN = %s" % chosen)
+				print line.replace(old, new)
 
 
 		# LOAD BAUD RATE
-		startBAUD = 57600								# Warning dynamic update to persist
-		BAUD = startBAUD							# Redundancy required for persistence
-		while(1):
-			print('\nBaud: %s' % BAUD)
-			if(yesno("OK?")):
-				break
-			else:
-				user = raw_input('\nNew Baud: ')
-				if(user.isdigit() == False):
-					print('Invalid input.')
+		if(self.gotBaud):
+			Baud = self.baud
+		else:
+			startBAUD = 57600								# Warning dynamic update to persist
+			Baud = startBAUD							# Redundancy required for persistence
+			while(1):
+				print('\nBaud: %s' % Baud)
+				if(yesno("OK?")):
+					break
 				else:
-					BAUD = int(user)
-		for line in fileinput.input('serials.py', inplace=True):		# Dynamic updaate
-			old = ("startBAUD = %s" % startBAUD)
-			new = ("startBAUD = %s" % BAUD)
-			print line.replace(old, new),
+					user = raw_input('\nNew Baud: ')
+					if(user.isdigit() == False):
+						print('Invalid input.')
+					else:
+						Baud = int(user)
+			for line in fileinput.input('serials.py', inplace=True):		# Dynamic updaate
+				old = ("startBAUD = %s" % startBAUD)
+				new = ("startBAUD = %s" % Baud)
+				print line.replace(old, new)
 
 
 		# CONNECT - Don't care about other parameters, standard
 		try:
-			self.ser = serial.Serial(port=ports[chosen],baudrate=BAUD,bytesize=8,parity='N',stopbits=1,timeout=None,xonxoff=0,rtscts=0)
+			self.ser = serial.Serial(port=ports[chosen],baudrate=Baud,bytesize=8,parity='N',stopbits=1,timeout=None,xonxoff=0,rtscts=0)
 		except serial.serialutil.SerialException:
 			print('Error: Connecting to serial port, exiting...')
 			sys.exit(0)
-		print("Connected: %s" % self.ser)
+		lines = str(self.ser).replace(" ","").split(',')
+		print("\n\nConnected:")
+		for line in lines:
+			print("          %s" % line)
 
 
 	def menu(self):
@@ -76,7 +125,7 @@ class Serial:
 			self.terminal()
 		elif(yesno('Radix')):
 			self.radix()
-		elif(yesno('Terminal')):
+		elif(yesno('Grpah')):
 			self.graph()
 
 
