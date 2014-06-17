@@ -34,9 +34,10 @@ def main():
 		u.com(options.com)
 	u.connect()
 	root = Tk()
+	root.wm_title("DebugSerial")
 	app = u.menu(root)
-	root.mainloop()
-	root.destroy()
+
+
 
 if __name__ == "__main__":
 	main()
