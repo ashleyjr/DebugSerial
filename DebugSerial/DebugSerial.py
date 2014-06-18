@@ -33,9 +33,12 @@ def main():
 		print ' Com: ', options.com
 		u.com(options.com)
 	u.connect()
+	print("\nLaunching GUI")
 	root = Tk()
 	root.wm_title("DebugSerial")
 	app = u.menu(root)
+	u.disconnect()
+
 
 
 

@@ -83,7 +83,7 @@ class Serial:
 						print('\nMore than 1 serial port found.')
 						for i in range(0,num_ports):
 							print('%s:   %s' % (i,descs[i]))
-						print("NUM: %s" % self.Com)
+						print("NUM: %s\n" % self.Com)
 						if(yesno("OK?")):
 							break
 						else:
@@ -99,7 +99,7 @@ class Serial:
 
 		if(self.gotBaud == False):
 			while(1):
-				print('\nBaud: %s' % self.Baud)
+				print('\nBaud: %s\n' % self.Baud)
 				if(yesno("OK?")):
 					break
 				else:
@@ -125,6 +125,12 @@ class Serial:
 		f = open(DAT,'w')
 		f.write("%s,%s" % (self.Baud,self.Com))
 		f.close()
+
+	def disconnect(self):
+		print("\nExiting...")
+		self.ser.close()
+		print("To invoke DebugSerial with the same settings...")
+		print("$ python DebugSerial.py -c %s -b %s" % (self.Com,self.Baud))
 
 
 	def menu(self,m):
@@ -241,7 +247,7 @@ class Serial:
 				s = s + "   	" + h.upper()
 				b = "{0:b}".format(data)
 				b = zeroPad(b,8)
-				s = s + "      " + b + "     " + humanRead(char,0)
+				s = s + "      " + b + "     " + humanRead(char,text=False)
 				self.text.configure(state=NORMAL)
 				self.text.insert(INSERT,s)
 				self.text.configure(state=DISABLED)
@@ -268,13 +274,16 @@ class Serial:
 		self.text.pack()
 		self.text.bind("<Key>",self.sendKeyGraph)
 		self.async = 1
+		#self.g.draw()
 		rx = threading.Thread(target=self.asyncRxGraph)
-		update = threading.Thread(target=self.grapher)
+		#grapher = threading.Thread(target=self.text.mainloop)
 		rx.start()
-		update.start()
-		self.text.mainloop()
+		#grapher.start()
+		self.g.draw()
+		#self.text.mainloop()
 		rx.join()
-		update.join()
+		#grapher.join()
+		#update.join()
 	def sendKeyGraph(self,event):
 		self.text.delete(INSERT)
 		char = event.char
@@ -303,9 +312,11 @@ class Serial:
 				b = "{0:b}".format(data)
 				b = zeroPad(b,8)
 				s = s + "      " + b + "     " + humanRead(char,0)
-				self.text.configure(state=NORMAL)
+				#self.text.configure(state=NORMAL)
+			#	self.text['state'] = 'normal'
 				self.text.insert(INSERT,s)
-				self.text.configure(state=DISABLED)
+				#self.text.configure(state=DISABLED)
+				#self.text['state'] = 'disabled'
 				self.g.new(data)
 		self.g.kill()
 	def graphEnd(self):
