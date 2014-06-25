@@ -76,7 +76,7 @@ class Serial:
 					elif(len(descs) == 1):										# One Port
 						print('\nConnecting to only available serial port.')
 						print('   %s' % descs[0])
-						Self.Com = 0
+						self.Com = 0
 						break
 					else:														# Many Ports, choose
 						num_ports = len(ports)
