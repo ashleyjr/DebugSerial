@@ -178,8 +178,11 @@ class Serial:
 		self.go_test['state'] = 'disabled'
 		self.go_terminal.configure(text="Close Terminal", command = self.terminalEnd)
 		self.text = Text(self.master)
+		self.scr = Scrollbar(self.master)
 		self.text.insert(INSERT, "Terminal mode:\n")
 		self.text.configure(state=DISABLED)
+		self.scr.pack(side="right", fill="y", expand=False)
+		self.text.pack(side="left", fill="both", expand=True)
 		self.text.pack()
 		self.text.bind("<Key>",self.sendKeyTerm)
 		self.async = 1
@@ -188,6 +191,7 @@ class Serial:
 		self.text.mainloop()
 		rx.join()
 	def sendKeyTerm(self,event):
+		self.text.mark_set("insert",END)
 		self.text.delete(INSERT)
 		char = event.char
 		if(len(char) == 1):
@@ -200,8 +204,10 @@ class Serial:
 				self.text.configure(state=NORMAL)	# Hacky but it works
 				self.text.insert(INSERT,humanRead(self.ser.read(1),text=True))
 				self.text.configure(state=DISABLED)
+				self.text.see(END)
 	def terminalEnd(self):
 		self.text.destroy()
+		self.scr.destroy()
 		self.async = 0
 		self.menuButtons()
 
@@ -216,9 +222,11 @@ class Serial:
 		self.go_test['state'] = 'disabled'
 		self.go_radix.configure(text="Close Radix", command = self.radixEnd)
 		self.text = Text(self.master)
+		self.scr = Scrollbar(self.master)
 		self.text.insert(INSERT, "Radix mode:\n")
 		self.text.configure(state=DISABLED)
-		self.text.pack()
+		self.scr.pack(side="right", fill="y", expand=False)
+		self.text.pack(side="left", fill="both", expand=True)
 		self.text.bind("<Key>",self.sendKeyRadix)
 		self.async = 1
 		rx = threading.Thread(target=self.asyncRxRadix)
@@ -226,6 +234,7 @@ class Serial:
 		self.text.mainloop()
 		rx.join()
 	def sendKeyRadix(self,event):
+		self.text.mark_set("insert",END)
 		self.text.delete(INSERT)
 		char = event.char
 		if(len(char) == 1):
@@ -251,8 +260,10 @@ class Serial:
 				self.text.configure(state=NORMAL)
 				self.text.insert(INSERT,s)
 				self.text.configure(state=DISABLED)
+				self.text.see(END)
 	def radixEnd(self):
 		self.text.destroy()
+		self.scr.destroy()
 		self.async = 0
 		self.menuButtons()
 
@@ -299,7 +310,7 @@ class Serial:
 	def asyncRxGraph(self):
 		self.text.configure(state=NORMAL)
 		self.text.insert(INSERT,"DEC     HEX     BIN          ASCII")
-		self.text.configure(state=DISABLED)
+		self.text.configure(state="disable")
 		while(self.async == 1):
 			if(self.ser.inWaiting()):
 				char = self.ser.read(1)
@@ -312,11 +323,9 @@ class Serial:
 				b = "{0:b}".format(data)
 				b = zeroPad(b,8)
 				s = s + "      " + b + "     " + humanRead(char,0)
-				#self.text.configure(state=NORMAL)
-			#	self.text['state'] = 'normal'
+				self.text.configure(state="normal")
 				self.text.insert(INSERT,s)
-				#self.text.configure(state=DISABLED)
-				#self.text['state'] = 'disabled'
+				self.text.configure(state="disable")
 				self.g.new(data)
 		self.g.kill()
 	def graphEnd(self):
