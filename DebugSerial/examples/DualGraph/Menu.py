@@ -11,6 +11,7 @@ class Menu(QtGui.QMainWindow):
 		self.reset()
 
 	def reset(self):
+		self.term = None
 		self.setWindowTitle('DebugSerial')
 		self.btnTerm.clicked.connect(self.Term)
 		self.btnRadi.clicked.connect(self.Radi)
@@ -20,15 +21,10 @@ class Menu(QtGui.QMainWindow):
 		self.show()
 
 	def Term(self):
-		self.btnTerm.clicked.connect(self.Term)
-		self.btnRadi.clicked.connect(self.Radi)
-		self.btnGrap.clicked.connect(self.Grap)
-		self.btnPlot.clicked.connect(self.Plot)
-		self.btnTest.clicked.connect(self.Test)
-		term = Term()
-		self.root.addWindow(term)
+		self.hide()
+		self.term = Term(self)
+		self.root.addWindow(self.term)
 
-	def TermEnd(self):
 
 
 	def Radi(self):
@@ -42,6 +38,9 @@ class Menu(QtGui.QMainWindow):
 
 	def Test(self):
 		print "Test script"
+
+	def closeEvent(self, event):
+		sys.exit(0)
 
 
 
