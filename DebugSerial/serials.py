@@ -126,6 +126,7 @@ class Serial:
 		f.write("%s,%s" % (self.Baud,self.Com))
 		f.close()
 
+
 	def disconnect(self):
 		print("\nExiting...")
 		self.ser.close()
@@ -180,7 +181,7 @@ class Serial:
 		self.text = Text(self.master)
 		self.scr = Scrollbar(self.master)
 		self.text.insert(INSERT, "Terminal mode:\n")
-		self.text.configure(state=DISABLED)
+		self.text.config(state=NORMAL)
 		self.scr.pack(side="right", fill="y", expand=False)
 		self.text.pack(side="left", fill="both", expand=True)
 		self.text.pack()
@@ -201,9 +202,10 @@ class Serial:
 	def asyncRxTerm(self):
 		while(self.async == 1):
 			if(self.ser.inWaiting()):
-				self.text.configure(state=NORMAL)	# Hacky but it works
+				self.text.config(state=NORMAL)
+				self.text.mark_set("insert",END)
 				self.text.insert(INSERT,humanRead(self.ser.read(1),text=True))
-				self.text.configure(state=DISABLED)
+				self.text.config(state=DISABLED)
 				self.text.see(END)
 	def terminalEnd(self):
 		self.text.destroy()
@@ -224,7 +226,7 @@ class Serial:
 		self.text = Text(self.master)
 		self.scr = Scrollbar(self.master)
 		self.text.insert(INSERT, "Radix mode:\n")
-		self.text.configure(state=DISABLED)
+		self.text.config(state=NORMAL)
 		self.scr.pack(side="right", fill="y", expand=False)
 		self.text.pack(side="left", fill="both", expand=True)
 		self.text.bind("<Key>",self.sendKeyRadix)
@@ -242,9 +244,9 @@ class Serial:
 			if((test >= 0) and (test <= 255)):
 				self.ser.write(char)
 	def asyncRxRadix(self):
-		self.text.configure(state=NORMAL)
+		self.text.config(state=NORMAL)
 		self.text.insert(INSERT,"DEC     HEX     BIN          ASCII")
-		self.text.configure(state=DISABLED)
+		#self.text.config(state=DISABLED)
 		while(self.async == 1):
 			if(self.ser.inWaiting()):
 				char = self.ser.read(1)
@@ -257,9 +259,9 @@ class Serial:
 				b = "{0:b}".format(data)
 				b = zeroPad(b,8)
 				s = s + "      " + b + "     " + humanRead(char,text=False)
-				self.text.configure(state=NORMAL)
+				self.text.config(state=NORMAL)
 				self.text.insert(INSERT,s)
-				self.text.configure(state=DISABLED)
+				self.text.config(state=DISABLED)
 				self.text.see(END)
 	def radixEnd(self):
 		self.text.destroy()
@@ -273,7 +275,8 @@ class Serial:
 
 
 	def graph(self):
-		self.g = Graph(20)
+		self.rx = Graph(20)
+		self.tx = Graph(20)
 		self.go_terminal['state'] = 'disabled'
 		self.go_radix['state'] = 'disabled'
 		self.go_plotter['state'] = 'disabled'
@@ -281,18 +284,31 @@ class Serial:
 		self.go_graph.configure(text="Close Graph", command = self.graphEnd)
 		self.text = Text(self.master)
 		self.text.insert(INSERT, "Graph mode:\n")
-		self.text.configure(state=DISABLED)
+		self.text.config(state=NORMAL)
 		self.text.pack()
 		self.text.bind("<Key>",self.sendKeyGraph)
 		self.async = 1
 		#self.g.draw()
 		rx = threading.Thread(target=self.asyncRxGraph)
+		drawRx = threading.Thread(target=self.rx.draw("Rx Data"))
+		drawTx = threading.Thread(target=self.tx.draw("Tx Data"))
+
+		#tx = threading.Thread(target=#)
 		#grapher = threading.Thread(target=self.text.mainloop)
 		rx.start()
+		drawTx.start()
+		drawRx.start()
+
+		while(self.async == 1):
+			print "test"
 		#grapher.start()
-		self.g.draw()
+		#self.rx.draw("Rx Data")
+		#self.tx.draw("Tx Data")
 		#self.text.mainloop()
 		rx.join()
+		drawTx.join()
+		drawRx.join()
+
 		#grapher.join()
 		#update.join()
 	def sendKeyGraph(self,event):
@@ -302,15 +318,16 @@ class Serial:
 			test = ord(char)
 			if((test >= 0) and (test <= 255)):
 				self.ser.write(char)
+				self.tx.new(test)
+				print test
 	def grapher(self):
 		while(self.async == 1):
 			time.sleep(1)
-			self.g.update()
-		self.g.kill()
+			self.rx.update()
+		self.rx.kill()
 	def asyncRxGraph(self):
-		self.text.configure(state=NORMAL)
+		self.text.config(state=NORMAL)
 		self.text.insert(INSERT,"DEC     HEX     BIN          ASCII")
-		self.text.configure(state="disable")
 		while(self.async == 1):
 			if(self.ser.inWaiting()):
 				char = self.ser.read(1)
@@ -326,8 +343,9 @@ class Serial:
 				self.text.configure(state="normal")
 				self.text.insert(INSERT,s)
 				self.text.configure(state="disable")
-				self.g.new(data)
-		self.g.kill()
+				self.rx.new(data)
+		self.rx.kill()
+		self.tx.kill()
 	def graphEnd(self):
 		self.text.destroy()
 		self.async = 0

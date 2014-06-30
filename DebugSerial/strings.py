@@ -78,7 +78,7 @@ def humanRead(char,text):
 		return "<Form Feed>"
 	elif(data == 13):
 		if(text):
-			return "\n\r"
+			return "\n"
 		else:
 			return "<Carriage Return>"
 	elif(data == 14):

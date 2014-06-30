@@ -76,13 +76,13 @@ class Graph:
 		self.y = list()
 		self.data = np.zeros((2,1000))
 
-	def draw(self):
+	def draw(self,title):
 		fig=plt.figure()
 		l, = plt.plot([], [])
 		plt.axis([0,self.width,0,255])
-		plt.xlabel('Rx Number')
+		plt.xlabel('Number')
 		plt.ylabel('Value')
-		plt.title('Rx Data')
+		plt.title(title)
 		for i in range(1,1000):
 			self.data[0][i] = i
 			self.data[1][i] = (1 + np.sin(i/3.14))*127
