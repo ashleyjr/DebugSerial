@@ -26,7 +26,7 @@ class Menu(QtGui.QMainWindow):
 
 
 
-	def Term(self,ser):
+	def Term(self):
 		self.hide()
 		self.term = Term(self, self.ser)
 		self.root.addWindow(self.term)
@@ -37,9 +37,11 @@ class Menu(QtGui.QMainWindow):
 
 
 
+
+
 	def Radi(self):
 		self.hide()
-		self.radi = Radi(self)
+		self.radi = Radi(self,self.ser)
 		self.root.addWindow(self.radi)
 
 	def EndRadi(self):

@@ -4,7 +4,7 @@ import threading
 class Term(QtGui.QMainWindow):
 	def __init__(self, caller, ser, parent=None):
 		super(Term, self).__init__()
-		uic.loadUi('Term.ui', self)
+		uic.loadUi('Box.ui', self)
 		self.setWindowTitle('DS: Terminal')
 
 
@@ -22,6 +22,7 @@ class Term(QtGui.QMainWindow):
 		self.show()
 
 
+
 	def closeEvent(self, event):
 		self.async = False
 		self.caller.EndTerm()
@@ -37,7 +38,8 @@ class Term(QtGui.QMainWindow):
 	def asyncRx(self):
 		while(self.async == True):
 			if(self.ser.wait()):
-
+				self.text.insertPlainText(self.ser.rx())
+				self.text.ensureCursorVisible()
 		return
 
 
