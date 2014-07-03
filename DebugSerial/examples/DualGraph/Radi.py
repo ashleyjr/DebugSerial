@@ -26,6 +26,7 @@ class Radi(QtGui.QMainWindow):
 
 	def closeEvent(self, event):
 		self.async = False
+		self.rx.join()
 		self.caller.EndRadi()
 
 

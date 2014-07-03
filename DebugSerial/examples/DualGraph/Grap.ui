@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>512</width>
-    <height>198</height>
+    <width>801</width>
+    <height>686</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,42 +15,60 @@
   </property>
   <widget class="QWidget" name="Menu">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="focusPolicy">
     <enum>Qt::NoFocus</enum>
    </property>
-   <widget class="QLabel" name="label">
+   <widget class="QwtPlot" name="qwtPlotTx">
     <property name="geometry">
      <rect>
-      <x>150</x>
-      <y>60</y>
-      <width>46</width>
-      <height>13</height>
+      <x>390</x>
+      <y>70</y>
+      <width>400</width>
+      <height>200</height>
      </rect>
-    </property>
-    <property name="text">
-     <string>TextLabel</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="btnClose">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
+   <widget class="QwtPlot" name="qwtPlotRx">
     <property name="geometry">
      <rect>
-      <x>220</x>
-      <y>140</y>
-      <width>75</width>
-      <height>23</height>
+      <x>390</x>
+      <y>300</y>
+      <width>400</width>
+      <height>200</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Close</string>
+   </widget>
+   <widget class="QTextEdit" name="textEditTx">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>70</y>
+      <width>341</width>
+      <height>201</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="textEditRx">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>310</y>
+      <width>341</width>
+      <height>181</height>
+     </rect>
     </property>
    </widget>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QwtPlot</class>
+   <extends>QFrame</extends>
+   <header>qwt_plot.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

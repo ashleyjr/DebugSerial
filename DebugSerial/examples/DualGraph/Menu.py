@@ -55,7 +55,7 @@ class Menu(QtGui.QMainWindow):
 
 	def Grap(self):
 		self.hide()
-		self.grap = Grap(self)
+		self.grap = Grap(self, self.ser)
 		self.root.addWindow(self.grap)
 
 	def EndGrap(self):
