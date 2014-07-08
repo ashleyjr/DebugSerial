@@ -8,12 +8,18 @@ print("|___/ \___|_.__/ \__,_|\__, \____/ \___|_|  |_|\__,_|_|")
 print("                        __/ |                          ")
 print("                       |___/                           ")
 
-from Tkinter import *
+import sys
 from serials import Serial
 import optparse
-import sys
+from PyQt4 import QtGui
+from Multi import Multi
+from Menu import Menu
 
-def main():
+
+
+
+
+if __name__ == "__main__":
 	parser = optparse.OptionParser()
 	parser.add_option('-b', '--baud',
 		dest="baud"
@@ -34,14 +40,9 @@ def main():
 		u.com(options.com)
 	u.connect()
 	print("\nLaunching GUI")
-	root = Tk()
-	root.wm_title("DebugSerial")
-	app = u.menu(root)
+	app = QtGui.QApplication(sys.argv)
+	root = Multi()
+	menu = Menu(root,u)
+	app.exec_()
 	u.disconnect()
-
-
-
-
-if __name__ == "__main__":
-	main()
 

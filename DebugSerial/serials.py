@@ -3,7 +3,7 @@ import serial, sys, os, threading, re
 from Tkinter import *
 from serial.tools.list_ports import comports
 from strings import *
-from graphs import *
+
 
 DAT = "DebugSerial.dat"
 
@@ -130,8 +130,21 @@ class Serial:
 	def disconnect(self):
 		print("\nExiting...")
 		self.ser.close()
-		print("To invoke DebugSerial with the same settings...")
+		print("To invoke DebugSerial with the same settings...\n\n")
 		print("$ python DebugSerial.py -c %s -b %s" % (self.Com,self.Baud))
+
+
+	def tx(self, data):
+		if((data >= 0) and (data <= 255)):
+			self.ser.write(chr(data))
+
+
+	def rx(self):
+		return self.ser.read(1)
+
+	def wait(self):
+		return self.ser.inWaiting()
+
 
 
 	def menu(self,m):
@@ -288,27 +301,34 @@ class Serial:
 		self.text.pack()
 		self.text.bind("<Key>",self.sendKeyGraph)
 		self.async = 1
+
+		self.rx = Graph(20)
+		self.tx = Graph(20)
+
 		#self.g.draw()
-		rx = threading.Thread(target=self.asyncRxGraph)
-		drawRx = threading.Thread(target=self.rx.draw("Rx Data"))
-		drawTx = threading.Thread(target=self.tx.draw("Tx Data"))
+		#rx = threading.Thread(target=self.asyncRxGraph)
+		temp = "Rx Data"
+		drawRx = threading.Thread(target=self.rx.draw,args=(temp,))
+		temp = "Tx Data"
+		drawTx = threading.Thread(target=self.tx.draw,args=(temp,))
 
 		#tx = threading.Thread(target=#)
 		#grapher = threading.Thread(target=self.text.mainloop)
-		rx.start()
-		drawTx.start()
-		drawRx.start()
 
-		while(self.async == 1):
-			print "test"
-		#grapher.start()
-		#self.rx.draw("Rx Data")
-		#self.tx.draw("Tx Data")
-		#self.text.mainloop()
-		rx.join()
-		drawTx.join()
-		drawRx.join()
-
+		self.tx.draw("Tx Data")
+		self.rx.draw("Rx Data")
+#		drawTx.start()
+#		print "2"
+#		#drawRx.start()
+#		#print "3"
+#
+#		while(self.async == 1):
+#			pass
+#
+#		rx.join()
+#		drawTx.join()
+#		#drawRx.join()
+#
 		#grapher.join()
 		#update.join()
 	def sendKeyGraph(self,event):
