@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import serial, sys, os, threading, re
+import serial, sys, os, threading, re, datetime
 from Tkinter import *
 from serial.tools.list_ports import comports
 from strings import *
@@ -9,6 +9,13 @@ DAT = "DebugSerial.dat"
 
 class Serial:
 	def __init__(self):
+
+		timestamp = unicode(datetime.datetime.now()).replace(":","-").replace(".","-").replace(" ","-")
+		log = open(timestamp + ".dat",'w')
+		log.write(timestamp)
+		log.close()
+
+
 		self.gotBaud = False
 		self.gotCom = False
 		self.Baud = 0
@@ -24,8 +31,6 @@ class Serial:
 			f = open(DAT,'w')
 			f.write("9600,0")
 			f.close()
-
-
 
 
 	def baud(self,b):
