@@ -5,15 +5,22 @@ from serial.tools.list_ports import comports
 from strings import *
 
 
-DAT = "DebugSerial.dat"
+DAT = "DebuSerial.dat"
+DIR = "dslogs"
+EXT = ".dslog"
+
 
 class Serial:
 	def __init__(self):
 
-		timestamp = unicode(datetime.datetime.now()).replace(":","-").replace(".","-").replace(" ","-")
-		log = open(timestamp + ".dat",'w')
-		log.write(timestamp)
-		log.close()
+		try:
+			if not os.path.exists(DIR):
+				os.makedirs(DIR)
+			timestamp = unicode(datetime.datetime.now()).replace("-","").replace(":","").replace(".","").replace(" ","")
+			self.log = open(DIR + "/" + timestamp + EXT,'w')
+			self.log.write(timestamp)
+		except:
+			print "Couldn't create log file"
 
 
 		self.gotBaud = False
@@ -133,6 +140,7 @@ class Serial:
 
 
 	def disconnect(self):
+		self.log.close()
 		print("\nExiting...")
 		self.ser.close()
 		print("To invoke DebugSerial with the same settings...\n\n")
@@ -140,12 +148,17 @@ class Serial:
 
 
 	def tx(self, data):
+		logStr = "t" + str(data)
+		self.log.write(logStr)
 		if((data >= 0) and (data <= 255)):
 			self.ser.write(chr(data))
 
 
 	def rx(self):
-		return self.ser.read(1)
+		data = self.ser.read(1)
+		logStr = "r" + str(ord(data))
+		self.log.write(logStr)
+		return data
 
 	def wait(self):
 		return self.ser.inWaiting()
