@@ -94,7 +94,6 @@ class Grap(QtGui.QMainWindow):
 					self.rx_x =  self.rx_x[1:]
 					self.rx_y =  self.rx_y[1:]
 				self.rx_count = self.rx_count + 1
-				print self.rx_y
 
 
 	def closeEvent(self, event):

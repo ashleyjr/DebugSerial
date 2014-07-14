@@ -20,53 +20,27 @@
    <property name="focusPolicy">
     <enum>Qt::NoFocus</enum>
    </property>
-   <widget class="QwtPlot" name="qwtPlotTx">
-    <property name="geometry">
-     <rect>
-      <x>390</x>
-      <y>70</y>
-      <width>400</width>
-      <height>200</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QwtPlot" name="qwtPlotRx">
-    <property name="geometry">
-     <rect>
-      <x>390</x>
-      <y>300</y>
-      <width>400</width>
-      <height>200</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QTextEdit" name="textEditTx">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>70</y>
-      <width>341</width>
-      <height>201</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QTextEdit" name="textEditRx">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>310</y>
-      <width>341</width>
-      <height>181</height>
-     </rect>
-    </property>
-   </widget>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QTextEdit" name="textEditTx"/>
+    </item>
+    <item row="0" column="1">
+     <widget class="QwtPlot" name="qwtPlotTx"/>
+    </item>
+    <item row="1" column="0">
+     <widget class="QTextEdit" name="textEditRx"/>
+    </item>
+    <item row="1" column="1">
+     <widget class="QwtPlot" name="qwtPlotRx"/>
+    </item>
+   </layout>
   </widget>
  </widget>
  <customwidgets>
   <customwidget>
    <class>QwtPlot</class>
    <extends>QFrame</extends>
-   <header>PyQt4.Qwt5</header>
+   <header>qwt_plot.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
