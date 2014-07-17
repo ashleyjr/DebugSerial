@@ -22,7 +22,7 @@ class Serial:
 			print "Couldn't create log file"
 		self.gotBaud = False
 		self.gotCom = False
-		self.Baud = 0
+		self.Baud = 9600
 		self.Com = 0
 		try:
 			f = open(DAT,'r+')
