@@ -7,7 +7,7 @@ from Grap import Grap
 class Menu(QtGui.QMainWindow):
 	def __init__(self,root,ser):
 		super(Menu, self).__init__()
-		uic.loadUi('Menu.ui', self)
+		uic.loadUi('uis/Menu.ui', self)
 		self.root = root
 		self.reset()
 		self.ser = ser

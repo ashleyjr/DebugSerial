@@ -4,7 +4,7 @@ from strings import *
 class Radi(QtGui.QMainWindow):
 	def __init__(self, caller, ser, parent=None):
 		super(Radi, self).__init__()
-		uic.loadUi('Radi.ui', self)
+		uic.loadUi('uis/Radi.ui', self)
 		self.setWindowTitle('DS: Radix')
 
 		self.textEditTx.insertPlainText("DEC     HEX     BIN                  ASCII\n")

@@ -1,29 +1,22 @@
 import sys
-import numpy
 import threading
 from strings import *
 from PyQt4.Qwt5 import *
 from PyQt4 import QtCore, QtGui, uic
 import PyQt4.Qwt5 as Qwt
 
-numPoints=1000
-xs=numpy.arange(numPoints)
-ys=numpy.sin(3.14159*xs*10/numPoints)
-
-
 
 class Grap(QtGui.QMainWindow):
 	def __init__(self, caller, ser, parent=None):
 		super(Grap, self).__init__()
 
-		uic.loadUi('Grap.ui', self)
+		uic.loadUi('uis/Grap.ui', self)
 
 		self.setWindowTitle('DS: Graph')
 		self.show()
 		self.ser = ser
 
 		self.caller = caller
-
 
 		self.rxPlot=Qwt.QwtPlotCurve()
 		self.rxPlot.attach(self.qwtPlotRx)
@@ -38,7 +31,7 @@ class Grap(QtGui.QMainWindow):
 
 		self.connect(self.timer, QtCore.SIGNAL('timeout()'), self.output)
 
-		self.connect(self.slider, QtCore.SIGNAL('valueChanged(int)'), self.setAxis)
+		self.connect(self.slider, QtCore.SIGNAL('valueChanged(int)'), self.setXAxis)
 
 		self.xAxis = 100
 
@@ -51,21 +44,20 @@ class Grap(QtGui.QMainWindow):
 		self.rx_count = 0
 		self.tx_count = 0
 
-		self.rx_x.append(0)
-		self.rx_y.append(0)
-		self.tx_x.append(0)
-		self.tx_y.append(0)
-
 		self.textEditTx.keyPressEvent = self.tx
-
 
 		self.show()
 
-	def setAxis(self,value):
+
+	def setXAxis(self,value):
 		self.xAxis = value
 
+
 	def output(self):
-		global ys
+
+		# Rx plot
+		grid = Qwt.QwtPlotGrid();
+		grid.attach(self.qwtPlotRx );
 		self.rxPlot.setData(self.rx_x, self.rx_y)
 		end = self.rx_count - self.xAxis
 		if(end < 0):
@@ -73,7 +65,11 @@ class Grap(QtGui.QMainWindow):
 		self.qwtPlotRx.setAxisScale(Qwt.QwtPlot.xBottom, end, self.rx_count)
 		self.qwtPlotRx.setAxisScale(Qwt.QwtPlot.yLeft, 0, 255)
 		self.qwtPlotRx.replot()
+
+
+		# Tx plot
 		self.txPlot.setData(self.tx_x, self.tx_y)
+		self.qwtPlotTx.setAxisScale(Qwt.QwtPlot.yLeft, 0, 255)
 		self.qwtPlotTx.replot()
 		self.rx()
 
