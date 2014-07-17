@@ -40,7 +40,7 @@ class Grap(QtGui.QMainWindow):
 
 		self.connect(self.slider, QtCore.SIGNAL('valueChanged(int)'), self.setAxis)
 
-
+		self.xAxis = 100
 
 
 		self.rx_x = []
@@ -62,12 +62,16 @@ class Grap(QtGui.QMainWindow):
 		self.show()
 
 	def setAxis(self,value):
-		self.qwtPlotRx.setAxisScale(Qwt.QwtPlot.xBottom, 0., value)
-		print value
+		self.xAxis = value
 
 	def output(self):
 		global ys
 		self.rxPlot.setData(self.rx_x, self.rx_y)
+		end = self.rx_count - self.xAxis
+		if(end < 0):
+			end = 0
+		self.qwtPlotRx.setAxisScale(Qwt.QwtPlot.xBottom, end, self.rx_count)
+		self.qwtPlotRx.setAxisScale(Qwt.QwtPlot.yLeft, 0, 255)
 		self.qwtPlotRx.replot()
 		self.txPlot.setData(self.tx_x, self.tx_y)
 		self.qwtPlotTx.replot()
@@ -97,7 +101,7 @@ class Grap(QtGui.QMainWindow):
 			self.textEditRx.ensureCursorVisible()
 			self.rx_x.append(self.rx_count)
 			self.rx_y.append(ord(data))
-			if(self.rx_count > 1000):
+			if(self.rx_count > self.xAxis ):
 				self.rx_x =  self.rx_x[1:]
 				self.rx_y =  self.rx_y[1:]
 			self.rx_count = self.rx_count + 1
