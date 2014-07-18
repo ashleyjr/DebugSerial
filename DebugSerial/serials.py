@@ -5,9 +5,9 @@ from serial.tools.list_ports import comports
 from strings import *
 
 
-DAT = "DebuSerial.dat"
+DAT = "ds.dat"
 DIR = "dsLogs"
-EXT = ".dslog"
+EXT = ".dsl"
 
 
 class Serial:
