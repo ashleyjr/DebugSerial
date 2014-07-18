@@ -3,20 +3,28 @@ from PyQt4 import QtCore, QtGui, uic
 from Term import Term
 from Radi import Radi
 from Grap import Grap
+from Plot import Plot
+from Scri import Scri
 
 class Menu(QtGui.QMainWindow):
 	def __init__(self,root,ser):
 		super(Menu, self).__init__()
 		uic.loadUi('dsUis/Menu.ui', self)
 		self.root = root
-		self.reset()
 		self.ser = ser
+		self.reset()
 
 	def reset(self):
 		self.setWindowTitle('DebugSerial')
 		self.btnTerm.clicked.connect(self.Term)
 		self.btnRadi.clicked.connect(self.Radi)
 		self.btnGrap.clicked.connect(self.Grap)
+		self.btnPlot.clicked.connect(self.Plot)
+		self.btnScri.clicked.connect(self.Scri)
+		com = "Com: " + str(self.ser.getCom())
+		self.labelCom.setText(com)
+		baud = "Baud: " + str(self.ser.getBaud())
+		self.labelBaud.setText(baud)
 		self.show()
 
 
@@ -27,8 +35,8 @@ class Menu(QtGui.QMainWindow):
 		self.root.addWindow(self.term)
 
 	def EndTerm(self):
-		self.show()
 		self.root.rmWindow(self.term)
+		self.show()
 
 
 
@@ -51,6 +59,27 @@ class Menu(QtGui.QMainWindow):
 	def EndGrap(self):
 		self.show()
 		self.root.rmWindow(self.grap)
+
+
+	def Plot(self):
+		self.hide()
+		self.plot = Plot(self, self.ser)
+		self.root.addWindow(self.plot)
+
+	def EndPlot(self):
+		self.show()
+		self.root.rmWindow(self.plot)
+
+
+
+	def Scri(self):
+		self.hide()
+		self.scri = Scri(self, self.ser)
+		self.root.addWindow(self.scri)
+
+	def EndScri(self):
+		self.show()
+		self.root.rmWindow(self.scri)
 
 
 

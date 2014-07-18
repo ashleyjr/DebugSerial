@@ -68,6 +68,12 @@ class Serial:
 		self.gotCom = True
 
 
+	def getBaud(self):
+		return self.Baud
+
+	def getCom(self):
+		return self.Com
+
 	def connect(self):
 		ports = list()															# comport info
 		descs = list()
@@ -130,7 +136,6 @@ class Serial:
 		f = open(DAT,'w')
 		f.write("%s,%s" % (self.Baud,self.Com))
 		f.close()
-
 
 	def disconnect(self):
 		self.log.close()
