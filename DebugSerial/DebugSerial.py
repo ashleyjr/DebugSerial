@@ -9,6 +9,7 @@ print("                        __/ |                          ")
 print("                       |___/                           ")
 
 import sys
+sys.path.append("dsPy")
 from serials import Serial
 import optparse
 from PyQt4 import QtGui
