@@ -39,15 +39,15 @@ class Plot(QtGui.QMainWindow):
 
 	def rx(self):
 		limit = self.ser.wait()
-		pre = 0x81
+		pre = 0x03
 		if(limit):
 			for i in range(0,limit):
 				data = ord(self.ser.rx())
 				print self.state
 				if(self.state == "pre"):
 					pre = data
-					if(data & 0x81):
-						if(data & 0x06):
+					if(data & 0x03):
+						if(data & 0x0C):
 							self.x = []			# Clear the graph
 							self.y = []
 						else:
