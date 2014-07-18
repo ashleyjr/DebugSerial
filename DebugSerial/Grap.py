@@ -10,7 +10,7 @@ class Grap(QtGui.QMainWindow):
 	def __init__(self, caller, ser, parent=None):
 		super(Grap, self).__init__()
 
-		uic.loadUi('uis/Grap.ui', self)
+		uic.loadUi('dsUis/Grap.ui', self)
 
 		self.setWindowTitle('DS: Graph')
 		self.show()

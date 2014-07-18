@@ -3,7 +3,7 @@ from PyQt4 import QtCore, QtGui, uic
 class Term(QtGui.QMainWindow):
 	def __init__(self, caller, ser, parent=None):
 		super(Term, self).__init__()
-		uic.loadUi('uis/Term.ui', self)
+		uic.loadUi('dsUis/Term.ui', self)
 		self.setWindowTitle('DS: Terminal')
 
 		self.text = QtGui.QTextEdit()

@@ -6,7 +6,7 @@ from strings import *
 
 
 DAT = "DebuSerial.dat"
-DIR = "dslogs"
+DIR = "dsLogs"
 EXT = ".dslog"
 
 
