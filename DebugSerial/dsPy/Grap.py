@@ -1,5 +1,4 @@
 import sys
-import threading
 from strings import *
 from PyQt4.Qwt5 import *
 from PyQt4 import QtCore, QtGui, uic

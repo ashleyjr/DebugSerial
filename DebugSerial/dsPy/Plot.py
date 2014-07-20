@@ -47,7 +47,7 @@ class Plot(QtGui.QMainWindow):
 				print self.state
 				if(self.state == "pre"):
 					self.pre = data
-					if(data & 0x03):
+					if(data & 0x03):			# In pre bits one and two have to be 1
 						if(data & 0x0C):
 							self.x = []			# Clear the graph
 							self.y = []
@@ -76,7 +76,6 @@ class Plot(QtGui.QMainWindow):
 						self.x.append(shifted)
 						self.state = "y1"
 
-
 				elif(self.state == "x3"):
 					shifted = (self.buff << 8)|data
 					if(self.pre & 0x40):
@@ -88,7 +87,7 @@ class Plot(QtGui.QMainWindow):
 
 				elif(self.state == "x4"):
 					shifted = (self.buff << 8)|data
-					self.append(shifted)
+					self.x.append(shifted)
 					self.state = "y1"
 
 
@@ -103,8 +102,29 @@ class Plot(QtGui.QMainWindow):
 						self.state = "pre"
 
 				elif(self.state == "y2"):
-					self.y.append(data << 8)
+					shifted = (self.buff << 8)|data
+					if(self.pre & 0x20):
+						self.buff = shifted
+						self.state = "y3"
+					else:
+						self.y.append(shifted)
+						self.state = "pre"
+
+				elif(self.state == "y3"):
+					shifted = (self.buff << 8)|data
+					if(self.pre & 0x10):
+						self.buff = shifted
+						self.state = "y4"
+					else:
+						self.y.append(shifted)
+						self.state = "y1"
+
+				elif(self.state == "y4"):
+					shifted = (self.buff << 8)|data
+					self.y.append(shifted)
 					self.state = "pre"
+
+
 
 			self.plot.setData(self.x, self.y)
 			self.qwtPlot.replot()
