@@ -48,7 +48,7 @@ int main(void){
 		
 		
 		// Plot using 255 x 255 
-		for(i=0;i<1000;i++){
+		for(i=0;i<255;i++){
 			limit = ((readAdc()/10) + 1);
 			tx(0x03);			// Add point code with 1 x byte and 1 y byte
 			varyDelay(limit);
@@ -65,7 +65,7 @@ int main(void){
 		
 		
 		// Plot using 65536 x 65536
-		for(i=0;i<100000;i++){
+		for(i=0;i<10000;i++){
 			limit = ((readAdc()/10) + 1);
 			tx(0x53);			// Add point code with 2 x bytes and 2 y bytes
 			varyDelay(limit);
@@ -79,11 +79,36 @@ int main(void){
 			x++;
 			varyDelay(limit);
 			if(65536 == x){
-				tx(0x87);		// clear code
+				tx(0x0F);		// clear code
 				varyDelay(limit);
 			}
 		}
+
 		
+		
+		
+		for(i=0;i<255;i++){
+			limit = ((readAdc()/10) + 1);
+			tx(0xA3);			// Add point code with 3 x bytes and 3 y bytes
+			varyDelay(limit);
+			tx(x >> 16);
+			varyDelay(limit);
+			tx(x >> 8);
+			varyDelay(limit);
+			tx(x);
+			varyDelay(limit);
+			tx(0);
+			varyDelay(limit);
+			tx(0);
+			varyDelay(limit);
+			tx(sine[x]);
+			x++;
+			varyDelay(limit);
+			if(65536 == x){
+				tx(0x0F);		// clear code
+				varyDelay(limit);
+			}
+		}
 
 		
 	}

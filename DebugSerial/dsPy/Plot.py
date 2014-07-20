@@ -117,7 +117,7 @@ class Plot(QtGui.QMainWindow):
 						self.state = "y4"
 					else:
 						self.y.append(shifted)
-						self.state = "y1"
+						self.state = "pre"
 
 				elif(self.state == "y4"):
 					shifted = (self.buff << 8)|data
