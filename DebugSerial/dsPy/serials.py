@@ -97,6 +97,8 @@ class Serial:
 						print('\nMore than 1 serial port found.')
 						for i in range(0,num_ports):
 							print('%s:   %s' % (i,descs[i]))
+						if(self.Com >= num_ports):
+							self.Com = 0
 						print("NUM: %s\n" % self.Com)
 						if(yesno("OK?")):
 							break
