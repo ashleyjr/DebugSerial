@@ -1,4 +1,4 @@
-import sys
+import sys, os
 from PyQt4 import QtCore, QtGui, uic
 from Term import Term
 from Radi import Radi
@@ -21,10 +21,13 @@ class Menu(QtGui.QMainWindow):
 		self.btnGrap.clicked.connect(self.Grap)
 		self.btnPlot.clicked.connect(self.Plot)
 		self.btnScri.clicked.connect(self.Scri)
+		self.btnReset.clicked.connect(self.Reset)
 		com = "Com: " + str(self.ser.getCom())
 		self.labelCom.setText(com)
 		baud = "Baud: " + str(self.ser.getBaud())
 		self.labelBaud.setText(baud)
+	 	reset = "Reset to chnage settings"
+		self.labelReset.setText(reset)
 		self.show()
 
 
@@ -80,6 +83,11 @@ class Menu(QtGui.QMainWindow):
 	def EndScri(self):
 		self.show()
 		self.root.rmWindow(self.scri)
+
+
+	def Reset(self):
+		QtCore.QCoreApplication.instance().quit()
+
 
 
 

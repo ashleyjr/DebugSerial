@@ -30,20 +30,25 @@ if __name__ == "__main__":
 	)
 	options, remainder = parser.parse_args()
 
-	u = Serial()
-	if(options.baud or options.com):
-		print("User options...")
-	if(options.baud):
-		print 'Baud: ', options.baud
-		u.baud(options.baud)
-	if(options.com):
-		print ' Com: ', options.com
-		u.com(options.com)
-	u.connect()
-	print("\nLaunching GUI")
-	app = QtGui.QApplication(sys.argv)
-	root = Multi()
-	menu = Menu(root,u)
-	app.exec_()
-	u.disconnect()
+	while True:
+		u = Serial()
+		if(options.baud or options.com):
+			print("User options...")
+		if(options.baud):
+			print 'Baud: ', options.baud
+			u.baud(options.baud)
+		if(options.com):
+			print ' Com: ', options.com
+			u.com(options.com)
+		u.connect()
+		print("\nLaunching GUI")
+		app = QtGui.QApplication(sys.argv)
+		root = Multi()
+		menu = Menu(root,u)
+		print app.exec_()
+		u.disconnect()
+		u = None
+		app = None
+		root = None
+		menu = None
 
