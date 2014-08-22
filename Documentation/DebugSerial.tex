@@ -1,0 +1,73 @@
+\documentclass[twoside,12pt]{article}
+
+%\usepackage[nodayofweek]{datetime}
+
+
+\usepackage{multirow}
+\usepackage[colorinlistoftodos,disable]{todonotes}
+\usepackage[nodayofweek]{datetime}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{titlesec}
+\newcommand{\sectionbreak}{\cleardoublepage}
+\usepackage[all]{background}
+\usepackage{lipsum}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usepackage{changepage}
+\usepackage{subfigure}
+\graphicspath{{Figures/}}
+
+\usepackage{fancyhdr, graphicx}
+\renewcommand{\headrulewidth}{0pt}
+
+\fancyfoot[C]{
+	\setlength{\unitlength}{1mm}
+	\begin{picture}(0,10)
+	\put(-70,40){\includegraphics[width=14cm]{cover.jpg}}
+	\end{picture}
+}
+
+
+\pagestyle{plain}
+
+
+
+\author{
+Ashey J. Robinson\\ \texttt{ashley181291@gmail.com}
+ \\}
+
+\title{DebugSerial\\ User Manual}
+
+\begin{document}
+\maketitle
+\thispagestyle{fancy}
+
+
+\input{definitions.tex}%import some definitions
+\clearpage
+%\listoftodos
+%\todo[inline]{Run a spell check on all files}
+%\begin{abstract}
+%Abstract
+%\end{abstract}
+
+\newpage
+\cleardoublepage
+\begin{abstract}
+
+DebugSerial is a tool for debugging embedded software using a simple serial connection.
+Only a UART with eight bits of data and a single stop bit is permitted but varying baud rates are allowed.
+Motivation for this tool is to increase design potential when only simple hardware is available.
+UART protocol is slow but is possible to setup real-time graphs and other interesting analysis techniques.
+This software relieves the embedded systems engineer from creating higher level protocols for sending data which can be time consuming when managing both ends of the connections.
+Protocols are defined and a rich GUI is provided so debugging using serial is simple from hardware all the way to visualisation.
+
+\end{abstract}
+\cleardoublepage
+\tableofcontents
+\cleardoublepage
+\input{Introduction.tex}
+
+\end{document}
+

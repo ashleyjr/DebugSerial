@@ -29,19 +29,21 @@ class Radi(QtGui.QMainWindow):
 
 	def tx(self, e):
 		char = unicode(e.text())
-		data = ord(char)
-		self.ser.tx(data)
-		s = "{0:d}".format(data)
-		s = zeroPad(s,3)
-		h = "{0:x}".format(data)
-		h = zeroPad(h,2)
-		s = s + "     " + h.upper()
-		b = "{0:b}".format(data)
-		b = zeroPad(b,8)
-		s = "\n" + s + "        " + b + "        " + humanRead(char,text=False)
-		self.textEditTx.insertPlainText(s)
-		self.textEditTx.ensureCursorVisible()
-
+		try:
+			data = ord(char)
+			self.ser.tx(data)
+			s = "{0:d}".format(data)
+			s = zeroPad(s,3)
+			h = "{0:x}".format(data)
+			h = zeroPad(h,2)
+			s = s + "     " + h.upper()
+			b = "{0:b}".format(data)
+			b = zeroPad(b,8)
+			s = "\n" + s + "        " + b + "        " + humanRead(char,text=False)
+			self.textEditTx.insertPlainText(s)
+			self.textEditTx.ensureCursorVisible()
+		except:
+			pass		# Key handler can pickup all keys so alt, F1, etc won't work
 
 	def rx(self):
 		limit = self.ser.wait()
