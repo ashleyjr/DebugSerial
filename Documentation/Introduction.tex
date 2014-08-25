@@ -1,9 +1,15 @@
-%  Introduction.tex
-%  Document created by seblovett on hind.ecs.soton.ac.uk
-%  Date created: Thu 27 Mar 2014 10:11:14 GMT
-%  <+Last Edited: Mon 28 Apr 2014 22:46:44 BST by seblovett on seblovett-Ubuntu +>
-
 \section{Introduction}
 
+\subsection{Hardware}
 
- examples of how to run a program. 
+\subsection{Getting Started}
+\ds is invoked as a python script from a terminal window.
+\ds will immediately search the environment for all available serial ports.
+Failure to find any serial ports will cause \ds to exit.
+If only one serial port is available this will be connected to automatically.
+When more than one serial port is found a choice will presented.
+User choices persist between program executions.
+
+When a serial port is selected a baud rate must be chosen.
+Any value can be taken  but this may be limited by chosen hardware.
+
