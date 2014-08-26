@@ -16,7 +16,7 @@ class Imag(QtGui.QMainWindow):
 		self.caller.EndImag()
 
 	def Load(self):
-		myPixmap = QtGui.QPixmap(QtCore.QString.fromUtf8('lenna.png'))
+		myPixmap = QtGui.QPixmap(QtCore.QString.fromUtf8('dsImages/lenna.png'))
 		self.image.setPixmap(myPixmap)
 		self.image.show();
 
