@@ -39,77 +39,55 @@ void varyDelay(uint16_t delay){
 
 int main(void){
 	uint16_t limit = 10;
-	uint8_t x;
-	uint16_t i;
+	uint8_t x,y;
+	uint16_t i,j;
 	initUart();
 	initAdc();
 	x = 0;
 	while(1){
-		
-		
+
 		// Plot using 255 x 255 
-		for(i=0;i<255;i++){
+		tx(0x0F);		// clear code
+		tx(0x0F);		// clear code
+		tx(0x0F);		// clear code
+		for(i=0;i<1000;i++){
 			limit = ((readAdc()/10) + 1);
 			tx(0x03);			// Add point code with 1 x byte and 1 y byte
 			varyDelay(limit);
 			tx(x);
 			varyDelay(limit);
-			tx(sine[x]);
+			tx(sine8[x]);
 			varyDelay(limit);
 			x++;
 			if(255 == x){
 				tx(0x0F);		// clear code
 				varyDelay(limit);
+				x = 0;
 			}
 		}
+
 		
 		
 		// Plot using 65536 x 65536
+		tx(0x0F);		// clear code
+		tx(0x0F);		// clear code
+		tx(0x0F);		// clear code
 		for(i=0;i<10000;i++){
 			limit = ((readAdc()/10) + 1);
 			tx(0x53);			// Add point code with 2 x bytes and 2 y bytes
 			varyDelay(limit);
-			tx(x >> 8);
+			tx(i >> 8);
 			varyDelay(limit);
-			tx(x);
+			tx(i & 0x00FF);
 			varyDelay(limit);
 			tx(0);
 			varyDelay(limit);
-			tx(sine[x]);
+			tx(sine8[x]);
 			x++;
 			varyDelay(limit);
-			if(65536 == x){
-				tx(0x0F);		// clear code
-				varyDelay(limit);
+			if(255 == x){
+				x = 0;
 			}
-		}
-
-		
-		
-		
-		for(i=0;i<255;i++){
-			limit = ((readAdc()/10) + 1);
-			tx(0xA3);			// Add point code with 3 x bytes and 3 y bytes
-			varyDelay(limit);
-			tx(x >> 16);
-			varyDelay(limit);
-			tx(x >> 8);
-			varyDelay(limit);
-			tx(x);
-			varyDelay(limit);
-			tx(0);
-			varyDelay(limit);
-			tx(0);
-			varyDelay(limit);
-			tx(sine[x]);
-			x++;
-			varyDelay(limit);
-			if(65536 == x){
-				tx(0x0F);		// clear code
-				varyDelay(limit);
-			}
-		}
-
-		
+		}	
 	}
 }

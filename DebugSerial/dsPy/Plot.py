@@ -44,13 +44,14 @@ class Plot(QtGui.QMainWindow):
 		if(limit):
 			for i in range(0,limit):
 				data = ord(self.ser.rx())
-				print self.state
+				#print self.state
 				if(self.state == "pre"):
 					self.pre = data
 					if(data & 0x03):			# In pre bits one and two have to be 1
 						if(data & 0x0C):
 							self.x = []			# Clear the graph
 							self.y = []
+							#print "clear"
 						else:
 							self.state = "x1"
 					else:

@@ -141,10 +141,10 @@ class Serial:
 
 	def disconnect(self):
 		self.log.close()
-		print("\nExiting...")
+		#print("\nExiting...")
 		self.ser.close()
-		print("To invoke DebugSerial with the same settings...\n\n")
-		print("$ python DebugSerial.py -c %s -b %s" % (self.Com,self.Baud))
+		#print("To invoke DebugSerial with the same settings...\n\n")
+		#print("$ python DebugSerial.py -c %s -b %s" % (self.Com,self.Baud))
 
 
 	def tx(self, data):

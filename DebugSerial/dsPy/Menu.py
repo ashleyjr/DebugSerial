@@ -12,9 +12,10 @@ class Menu(QtGui.QMainWindow):
 		uic.loadUi('dsUis/Menu.ui', self)
 		self.root = root
 		self.ser = ser
-		self.reset()
+		self.reset = False
+		self.Run()
 
-	def reset(self):
+	def Run(self):
 		self.setWindowTitle('DebugSerial')
 		self.btnTerm.clicked.connect(self.Term)
 		self.btnRadi.clicked.connect(self.Radi)
@@ -26,7 +27,7 @@ class Menu(QtGui.QMainWindow):
 		self.labelCom.setText(com)
 		baud = "Baud: " + str(self.ser.getBaud())
 		self.labelBaud.setText(baud)
-	 	reset = "Reset to chnage settings"
+	 	reset = "Reset to change settings"
 		self.labelReset.setText(reset)
 		self.show()
 
@@ -86,7 +87,12 @@ class Menu(QtGui.QMainWindow):
 
 
 	def Reset(self):
+		print("\n\n------ Reset ------\n")
+		self.reset = True
 		QtCore.QCoreApplication.instance().quit()
+
+	def getReset(self):
+		return self.reset
 
 
 

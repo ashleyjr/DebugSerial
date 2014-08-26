@@ -19,7 +19,6 @@ from Menu import Menu
 
 
 
-
 if __name__ == "__main__":
 	parser = optparse.OptionParser()
 	parser.add_option('-b', '--baud',
@@ -29,8 +28,12 @@ if __name__ == "__main__":
 		dest="com"
 	)
 	options, remainder = parser.parse_args()
-
-	while True:
+	run = True
+	while(run):
+		u = None
+		app = None
+		root = None
+		menu = None
 		u = Serial()
 		if(options.baud or options.com):
 			print("User options...")
@@ -45,10 +48,9 @@ if __name__ == "__main__":
 		app = QtGui.QApplication(sys.argv)
 		root = Multi()
 		menu = Menu(root,u)
-		print app.exec_()
+		app.exec_()
 		u.disconnect()
-		u = None
-		app = None
-		root = None
-		menu = None
-
+		run = menu.getReset()
+	print("\nExiting.")
+	print("To invoke DebugSerial with the same settings...\n\n")
+	print("$ python DebugSerial.py -c %s -b %s" % (u.getCom(),u.getBaud()))
