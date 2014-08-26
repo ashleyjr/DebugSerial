@@ -5,6 +5,7 @@ from Radi import Radi
 from Grap import Grap
 from Plot import Plot
 from Scri import Scri
+from Imag import Imag
 
 class Menu(QtGui.QMainWindow):
 	def __init__(self,root,ser):
@@ -22,6 +23,7 @@ class Menu(QtGui.QMainWindow):
 		self.btnGrap.clicked.connect(self.Grap)
 		self.btnPlot.clicked.connect(self.Plot)
 		self.btnScri.clicked.connect(self.Scri)
+		self.btnImag.clicked.connect(self.Imag)
 		self.btnReset.clicked.connect(self.Reset)
 		com = "Com: " + str(self.ser.getCom())
 		self.labelCom.setText(com)
@@ -84,6 +86,22 @@ class Menu(QtGui.QMainWindow):
 	def EndScri(self):
 		self.show()
 		self.root.rmWindow(self.scri)
+
+
+
+	def Imag(self):
+		self.hide()
+		self.imag = Imag(self, self.ser)
+		self.root.addWindow(self.imag)
+
+	def EndImag(self):
+		self.show()
+		self.root.rmWindow(self.imag)
+
+
+
+
+
 
 
 	def Reset(self):
