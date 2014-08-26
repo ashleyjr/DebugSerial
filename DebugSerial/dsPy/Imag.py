@@ -5,12 +5,20 @@ class Imag(QtGui.QMainWindow):
 		super(Imag, self).__init__()
 		uic.loadUi('dsUis/Imag.ui', self)
 		self.setWindowTitle('DS: Imager')
+
+		self.caller = caller
+		self.ser = ser
+
 		self.btnLoad.clicked.connect(self.Load)
 		self.show()
 
+	def closeEvent(self, event):
+		self.caller.EndImag()
+
 	def Load(self):
-		image.setPixmap("lenna.png");
-		image.show();
+		myPixmap = QtGui.QPixmap(QtCore.QString.fromUtf8('lenna.png'))
+		self.image.setPixmap(myPixmap)
+		self.image.show();
 
 
 
