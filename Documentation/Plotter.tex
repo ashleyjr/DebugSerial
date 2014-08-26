@@ -2,4 +2,40 @@
 
 
 Advanced graphing cannot be achieved in the transmission domain so the \ds Plotter option allows real-time graphing.
-This is a receive only option and a higher level protocol must be adhered to in order to creATE THE GRAPHS.  
+This is a receive only option and a higher level protocol must be adhered to in order to creATE THE GRAPHS. 
+
+\subsection{Protocol}
+
+\begin{table}[h]
+   \centering
+    \begin{tabular}{ | p{3cm} | p{6cm}|p{1cm} | p{1cm}|}\hline
+    \textbf{CMD Byte} 	& \textbf{Function} 					& \textbf{X} 					& \textbf{Y}	\\ \hline
+    xx xx 00 11 			&	Add point to plot. 					& 0 							& 0 							\\ \hline
+	xx xx 01 11 			&	Remove point from plot.	 			& 0 							& 0 							\\ \hline
+	xx xx 00 11 			&	Reserved for future use.	 		& 0 							& 0 							\\ \hline
+	xx xx 11 11 			&	Clear entire plot.			 		& 0 							& 0								\\ \hline
+	00 00 0c 11 			&	Add(0) or Remove(1) point. 			& 1 							& 1								\\ \hline
+	00 01 0c 11 			&	Add(0) or Remove(1) point. 			& 2 							& 1								\\ \hline
+	00 10 0c 11 			&	Add(0) or Remove(1) point. 			& 3 							& 1								\\ \hline
+	00 11 0c 11 			&	Add(0) or Remove(1) point. 			& 4 							& 1								\\ \hline
+	01 00 0c 11 			&	Add(0) or Remove(1) point. 			& 1 							& 2								\\ \hline
+	01 01 0c 11 			&	Add(0) or Remove(1) point. 			& 2 							& 2								\\ \hline
+	01 10 0c 11 			&	Add(0) or Remove(1) point. 			& 3 							& 2								\\ \hline
+	01 11 0c 11 			&	Add(0) or Remove(1) point. 			& 4 							& 2								\\ \hline
+	10 00 0c 11 			&	Add(0) or Remove(1) point. 			& 1 							& 3								\\ \hline
+	10 01 0c 11 			&	Add(0) or Remove(1) point. 			& 2 							& 3								\\ \hline
+	10 10 0c 11 			&	Add(0) or Remove(1) point. 			& 3 							& 3								\\ \hline
+	10 11 0c 11 			&	Add(0) or Remove(1) point. 			& 4 							& 3								\\ \hline
+	11 00 0c 11 			&	Add(0) or Remove(1) point. 			& 1 							& 4								\\ \hline
+	11 01 0c 11 			&	Add(0) or Remove(1) point. 			& 2 							& 4								\\ \hline
+	11 10 0c 11 			&	Add(0) or Remove(1) point. 			& 3 							& 4								\\ \hline
+	11 11 0c 11 			&	Add(0) or Remove(1) point. 			& 4 							& 4								\\ \hline
+    \end{tabular}
+    \caption{Command byte protocol}
+    \label{tab:cmdByte}
+\end{table}
+
+
+
+
+
