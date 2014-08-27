@@ -39,7 +39,9 @@ if __name__ == "__main__":
 		IM = numpy.asarray(im)
 		print ("\nMatrix size: %s" % str(IM.shape))
 
-		arr = "const uint8_t " + name + "[" + str(size) + "]" +  "[" + str(size) + "] = {"
+		arr = "\n\n#define ROW " + str(size)
+		arr = arr + "\n#define COL " + str(size)
+		arr = arr + "\nconst uint8_t " + name + "[" + str(size) + "]" +  "[" + str(size) + "] = {"
 		for i in range(0,size):
 			arr = arr + "\n    {"
 			for j in range(0,size):
