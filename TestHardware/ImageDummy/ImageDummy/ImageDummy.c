@@ -26,7 +26,7 @@ int main(void)
 	while(1){
 		for(i=0;i<ROW;i++){
 			for(j=0;j<COL;j++){
-				_delay_ms(1);
+				//_delay_ms(1);
 				data = pgm_read_byte(&(Lenna[i][j]));
 				tx(data);
 			}

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>502</width>
-    <height>220</height>
+    <height>500</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,20 +21,34 @@
     <enum>Qt::NoFocus</enum>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <item row="1" column="0">
-     <widget class="QTextEdit" name="info"/>
-    </item>
     <item row="0" column="0">
-     <widget class="QLabel" name="image">
+     <widget class="QLabel" name="image1">
       <property name="text">
        <string/>
       </property>
      </widget>
     </item>
-    <item row="2" column="0">
-     <widget class="QPushButton" name="btnLoad">
+    <item row="1" column="0" colspan="4">
+     <widget class="QTextEdit" name="info"/>
+    </item>
+    <item row="0" column="3">
+     <widget class="QLabel" name="image4">
       <property name="text">
-       <string>Load Image</string>
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QLabel" name="image2">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="QLabel" name="image3">
+      <property name="text">
+       <string/>
       </property>
      </widget>
     </item>

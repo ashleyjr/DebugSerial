@@ -21,8 +21,8 @@ if __name__ == "__main__":
 		image = options.image
 
 		# Check size
-		if(size > 100):
-			print("\nSize must be 100 x 100 or less")
+		if(size > 200):
+			print("\nSize must be 150 x 150 or less")
 			sys.exit(0)
 
 		# Resize, B&W and save new image

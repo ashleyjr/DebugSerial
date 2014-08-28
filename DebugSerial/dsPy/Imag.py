@@ -96,8 +96,14 @@ class Imag(QtGui.QMainWindow):
 			im = Image.fromarray(im)
 			im.save("test.png")
 			myPixmap = QtGui.QPixmap(QtCore.QString.fromUtf8('test.png'))
-			self.image.setPixmap(myPixmap)
-			self.image.show();
+			self.image1.setPixmap(myPixmap.scaled(200, 200))
+			self.image1.show();
+			self.image2.setPixmap(myPixmap.scaled(200, 200))
+			self.image2.show();
+			self.image3.setPixmap(myPixmap.scaled(200, 200))
+			self.image3.show();
+			self.image4.setPixmap(myPixmap.scaled(200, 200))
+			self.image4.show();
 			if(full):
 				update = update + "Full lock"
 			else:
