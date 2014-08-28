@@ -20,13 +20,15 @@ void tx(uint8_t b) {
 int main(void)
 {
 	uint8_t i,j;
+	uint8_t data;
 	initUart();
 	
 	while(1){
 		for(i=0;i<ROW;i++){
 			for(j=0;j<COL;j++){
-				_delay_ms(20);
-				tx(Lenna[i][j]);
+				_delay_ms(1);
+				data = pgm_read_byte(&(Lenna[i][j]));
+				tx(data);
 			}
 			tx('\n');
 		}

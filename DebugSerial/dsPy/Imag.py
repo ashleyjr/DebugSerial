@@ -13,7 +13,7 @@ class Imag(QtGui.QMainWindow):
 		self.caller = caller
 		self.ser = ser
 
-		self.btnLoad.clicked.connect(self.Load)
+		#self.btnLoad.clicked.connect(self.Load)
 
 
 		self.data = []
@@ -21,81 +21,92 @@ class Imag(QtGui.QMainWindow):
 		self.timer1 = QtCore.QTimer()
 		self.timer1.start(100.0)
 		self.connect(self.timer1, QtCore.SIGNAL('timeout()'), self.rx)
+		self.got = 0
+
+		self.timer2 = QtCore.QTimer()
+		self.timer2.start(2000.0)
+		self.connect(self.timer2, QtCore.SIGNAL('timeout()'), self.Load)
+		self.info.insertPlainText("Recieving data")
+
+
 
 		self.show()
 
 	def closeEvent(self, event):
 		self.timer1.stop()
+		self.timer2.stop()
 		self.caller.EndImag()
 
 	def rx(self):
 		limit = self.ser.wait()
 		for i in range(0,limit):
 			self.data.append(self.ser.rx())
-
+			self.got = self.got + 1
 
 	def Load(self):
+		update = ("Recieved %s bytes\n" % self.got)
 
 		# Remove the image sub array
 		im_vec = []
 		broke = False
 		full = False
-		stop = len(self.data)
-		for i in range(2,stop):
+		for i in range(2,len(self.data)):
 			if(self.data[i-2] == "\n"):
 				if(self.data[i-1] == "\n"):
 					if(broke == False):
 						broke = True
 					else:
-						broke = False
 						full = True
-						stop = i
 			if(broke):
 				im_vec.append(self.data[i])
+			if(full):
+				break
 
-		# construct matrix
-		if(full):
-			print im_vec
-			line = len(im_vec)
-			print line
-
-			lock = 0
-			for i in range(0,line):
-				if(im_vec[i] == "\n"):
-					if(im_vec[(2*i) + 1] == "\n"):
-						if(im_vec[(3*i) + 2] == "\n"):
-							lock = i
-				if(lock):
+		# Lock on the series of \n chars
+		line = len(im_vec)
+		lock = 0
+		for i in range(0,line):
+			locked = True
+			index = i
+			j = 0
+			while(index < line):
+				if(im_vec[index] != "\n"):
+					locked = False
 					break
-			print lock
+				j = j + 1
+				index = (j+1)*i + j
+			if(locked):
+				lock = i
+				break
 
+		# Display and save image if locked
+		if(lock):
 			im = []
-			im.append([])
-			col = 0
 			row = 0
-			for i in range(0,line):
-				im[row].append(self.data[i])
-				col = col + 1
-				if(col == lock):
-					im.append([])
-					col = 0
-					row = row + 1
-
-			img = Image.open("dsImages/Lenna.png").convert("L")
+			i = 0
+			while(i < (line-lock)):
+				im.append([])
+				for j in range(0,lock):
+					im[row].append(ord(im_vec[i]))
+					i = i + 1
+				i = i + 1
+				row = row + 1
 			im = numpy.array(im)
-			print im
+			im = im.astype(numpy.uint8)
+			im = Image.fromarray(im)
 			im.save("test.png")
-
 			myPixmap = QtGui.QPixmap(QtCore.QString.fromUtf8('test.png'))
 			self.image.setPixmap(myPixmap)
 			self.image.show();
-
-
-
-			self.data = []
+			if(full):
+				update = update + "Full lock"
+			else:
+				update = update + "Partial lock"
 		else:
-			print("not full yet")
+			update = update + "No lock"
 
+		self.info.clear()
+		self.info.insertPlainText(update)
 
 
 
