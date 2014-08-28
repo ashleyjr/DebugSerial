@@ -1,4 +1,8 @@
 from PyQt4 import QtCore, QtGui, uic
+from PIL import Image
+import numpy
+
+
 
 class Imag(QtGui.QMainWindow):
 	def __init__(self, caller, ser, parent=None):
@@ -30,51 +34,67 @@ class Imag(QtGui.QMainWindow):
 			self.data.append(self.ser.rx())
 
 
-	def seek(self):
-		run = True
-		start = True
-		count = 0
-		for i in range(0,(len(self.data)-1)):
-			count = count + 1
-			if(self.data[i] == "\n"):
-				if(self.data[i + 1] == "\n"):
-					if(start):
-						start = False
-						startPos = i + 2
-						self.info.insertPlainText("Begin\n\n")
-					else:
-						start = True
-						endPos = i - 1
-						self.info.insertPlainText("End\n\n")
-						self.info.insertPlainText(str(count))
-			if(run == False):
-				break
-
-
 	def Load(self):
 
-		run = True
-		start = True
-		count = 0
-		for i in range(0,(len(self.data)-1)):
-			count = count + 1
-			if(self.data[i] == "\n"):
-				if(self.data[i + 1] == "\n"):
-					if(start):
-						start = False
-						startPos = i + 2
-						self.info.insertPlainText("Begin\n\n")
+		# Remove the image sub array
+		im_vec = []
+		broke = False
+		full = False
+		stop = len(self.data)
+		for i in range(2,stop):
+			if(self.data[i-2] == "\n"):
+				if(self.data[i-1] == "\n"):
+					if(broke == False):
+						broke = True
 					else:
-						start = True
-						endPos = i - 1
-						self.info.insertPlainText("End\n\n")
-						self.info.insertPlainText(str(count))
-			if(run == False):
-				break
+						broke = False
+						full = True
+						stop = i
+			if(broke):
+				im_vec.append(self.data[i])
 
-		#myPixmap = QtGui.QPixmap(QtCore.QString.fromUtf8('dsImages/lenna.png'))
-		#self.image.setPixmap(myPixmap)
-		#self.image.show();
+		# construct matrix
+		if(full):
+			print im_vec
+			line = len(im_vec)
+			print line
+
+			lock = 0
+			for i in range(0,line):
+				if(im_vec[i] == "\n"):
+					if(im_vec[(2*i) + 1] == "\n"):
+						if(im_vec[(3*i) + 2] == "\n"):
+							lock = i
+				if(lock):
+					break
+			print lock
+
+			im = []
+			im.append([])
+			col = 0
+			row = 0
+			for i in range(0,line):
+				im[row].append(self.data[i])
+				col = col + 1
+				if(col == lock):
+					im.append([])
+					col = 0
+					row = row + 1
+
+			img = Image.open("dsImages/Lenna.png").convert("L")
+			im = numpy.array(im)
+			print im
+			im.save("test.png")
+
+			myPixmap = QtGui.QPixmap(QtCore.QString.fromUtf8('test.png'))
+			self.image.setPixmap(myPixmap)
+			self.image.show();
+
+
+
+			self.data = []
+		else:
+			print("not full yet")
 
 
 
