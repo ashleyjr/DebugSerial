@@ -24,14 +24,38 @@ int main(void)
 	initUart();
 	
 	while(1){
+		
 		for(i=0;i<ROW;i++){
 			for(j=0;j<COL;j++){
 				//_delay_ms(1);
-				data = pgm_read_byte(&(Lenna[i][j]));
+				data = pgm_read_byte(&(Lenna_R[i][j]));
 				tx(data);
 			}
 			tx('\n');
 		}
+		tx('R');
+		tx('\n');
+	
+		for(i=0;i<ROW;i++){
+			for(j=0;j<COL;j++){
+				//_delay_ms(1);
+				data = pgm_read_byte(&(Lenna_G[i][j]));
+				tx(data);
+			}
+			tx('\n');
+		}
+		tx('G');
+		tx('\n');
+
+		for(i=0;i<ROW;i++){
+			for(j=0;j<COL;j++){
+				//_delay_ms(1);
+				data = pgm_read_byte(&(Lenna_B[i][j]));
+				tx(data);
+			}
+			tx('\n');
+		}
+		tx('B');
 		tx('\n');
 	}
 }

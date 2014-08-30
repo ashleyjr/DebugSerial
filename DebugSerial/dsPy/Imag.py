@@ -18,6 +18,8 @@ class Imag(QtGui.QMainWindow):
 
 		self.data = []
 
+		self.screen = 1
+
 		self.timer1 = QtCore.QTimer()
 		self.timer1.start(100.0)
 		self.connect(self.timer1, QtCore.SIGNAL('timeout()'), self.rx)
@@ -50,17 +52,19 @@ class Imag(QtGui.QMainWindow):
 		im_vec = []
 		broke = False
 		full = False
-		for i in range(2,len(self.data)):
-			if(self.data[i-2] == "\n"):
+		for i in range(3,len(self.data)):
+			if(self.data[i-3] == "\n"):
 				if(self.data[i-1] == "\n"):
 					if(broke == False):
 						broke = True
 					else:
+						colour = self.data[i-2]
 						full = True
 			if(broke):
 				im_vec.append(self.data[i])
 			if(full):
 				break
+		update = update + ("Colour %s \n" % colour)
 
 		# Lock on the series of \n chars
 		line = len(im_vec)
@@ -96,16 +100,82 @@ class Imag(QtGui.QMainWindow):
 			im = Image.fromarray(im)
 			im.save("test.png")
 			myPixmap = QtGui.QPixmap(QtCore.QString.fromUtf8('test.png'))
-			self.image1.setPixmap(myPixmap.scaled(200, 200))
-			self.image1.show();
-			self.image2.setPixmap(myPixmap.scaled(200, 200))
-			self.image2.show();
-			self.image3.setPixmap(myPixmap.scaled(200, 200))
-			self.image3.show();
-			self.image4.setPixmap(myPixmap.scaled(200, 200))
-			self.image4.show();
+
+			if(colour == 'W'):
+				update = update + ("Screen %s \n" % self.screen)
+				if(self.screen == 1):
+					self.image1.setPixmap(myPixmap.scaled(200, 200))
+					self.image1.show();
+					self.screen = 2
+				elif(self.screen == 2):
+					self.image2.setPixmap(myPixmap.scaled(200, 200))
+					self.image2.show();
+					self.screen = 3
+				elif(self.screen == 3):
+					self.image3.setPixmap(myPixmap.scaled(200, 200))
+					self.image3.show();
+					self.screen = 4
+				else:
+					self.image4.setPixmap(myPixmap.scaled(200, 200))
+					self.image4.show();
+					self.screen = 1
+
+			elif(colour == 'R'):
+				self.red = im
+
+				im = numpy.array(im)
+				im = im.astype(numpy.uint8)
+				rgbArray = numpy.zeros((10,10,3), 'uint8')
+				rgbArray[..., 0] = im
+				rgbArray[..., 1] = im*0
+				rgbArray[..., 2] = im*0
+				im = Image.fromarray(rgbArray)
+				im.save("test.png")
+				myPixmap = QtGui.QPixmap(QtCore.QString.fromUtf8('test.png'))
+
+				self.image1.setPixmap(myPixmap.scaled(200, 200))
+				self.image1.show();
+			elif(colour == 'G'):
+				self.green = im
+
+				im = numpy.array(im)
+				im = im.astype(numpy.uint8)
+				rgbArray = numpy.zeros((10,10,3), 'uint8')
+				rgbArray[..., 0] = im*0
+				rgbArray[..., 1] = im
+				rgbArray[..., 2] = im*0
+				im = Image.fromarray(rgbArray)
+				im.save("test.png")
+				myPixmap = QtGui.QPixmap(QtCore.QString.fromUtf8('test.png'))
+
+
+				self.image2.setPixmap(myPixmap.scaled(200, 200))
+				self.image2.show();
+			elif(colour == 'B'):
+				self.blue = im
+
+				im = numpy.array(im)
+				im = im.astype(numpy.uint8)
+				rgbArray = numpy.zeros((10,10,3), 'uint8')
+				rgbArray[..., 0] = im*0
+				rgbArray[..., 1] = im*0
+				rgbArray[..., 2] = im
+				im = Image.fromarray(rgbArray)
+				im.save("test.png")
+				myPixmap = QtGui.QPixmap(QtCore.QString.fromUtf8('test.png'))
+
+				self.image3.setPixmap(myPixmap.scaled(200, 200))
+				self.image3.show();
+
+			if(self.red and self.green and self.blue):
+
+				self.image4.setPixmap(myPixmap.scaled(200, 200))
+				self.image4.show();
+
+
 			if(full):
 				update = update + "Full lock"
+				self.data = []
 			else:
 				update = update + "Partial lock"
 		else:
